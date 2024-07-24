@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import com.example.balancebuddy.entities.MyUser;
 import com.example.balancebuddy.entities.Role;
-import com.example.balancebuddy.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,21 +12,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class UserManager implements UserDetailsManager {
 
     @Autowired
-    UserRepository userRepository;
-
+    private UserService userService;
     @Autowired
     PasswordEncoder passwordEncoder;
 
     @Override
     public void createUser(UserDetails user) {
-        ((MyUser) user).setPassword(passwordEncoder.encode(user.getPassword()));
-        ((MyUser) user).setRole(Role.USER);
-        userRepository.save((MyUser) user);
+        MyUser myUser = (MyUser) user;
+        myUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        myUser.setRole(Role.USER);
+        userService.createUser(myUser);
     }
 
     @Override
@@ -44,12 +42,12 @@ public class UserManager implements UserDetailsManager {
 
     @Override
     public boolean userExists(String username) {
-        return userRepository.findByEmail(username).isPresent();
+        return userService.findByEmail(username).isPresent();
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<MyUser> userOptional = userRepository.findByEmail(email);
+        Optional<MyUser> userOptional = userService.findByEmail(email);
 
         if (userOptional.isEmpty()) {
             throw new UsernameNotFoundException(MessageFormat.format("User with email {0} not found", email));

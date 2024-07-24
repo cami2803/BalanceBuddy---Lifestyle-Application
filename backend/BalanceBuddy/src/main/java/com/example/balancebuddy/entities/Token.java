@@ -2,14 +2,14 @@ package com.example.balancebuddy.entities;
 
 public class Token {
 
-    private int userId;
+    private int userID;
     private String accessToken;
     private String refreshToken;
-    public int getUserId() {
-        return userId;
+    public int getUserID() {
+        return userID;
     }
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
     public String getAccessToken() {
         return accessToken;

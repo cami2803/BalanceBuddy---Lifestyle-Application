@@ -18,6 +18,7 @@ public class MyUser implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "userid")
     private int userID;
 
     @NonNull

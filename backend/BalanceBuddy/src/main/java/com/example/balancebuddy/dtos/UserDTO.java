@@ -11,7 +11,7 @@ public class UserDTO {
     private String username;
 
     public static UserDTO from(MyUser user) {
-        return UserDTO.builder()  // Corrected the reference to the builder
+        return UserDTO.builder()
                 .id(user.convertUserIDToString(user.getUserID()))
                 .username(user.getUsername())
                 .build();

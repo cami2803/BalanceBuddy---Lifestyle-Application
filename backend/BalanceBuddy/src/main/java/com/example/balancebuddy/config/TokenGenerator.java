@@ -26,6 +26,7 @@ public class TokenGenerator {
     @Qualifier("jwtRefreshTokenEncoder")
     JwtEncoder refreshTokenEncoder;
 
+    // Creates an access token with a 5 minute expiration time
     private String createAccessToken(Authentication authentication) {
         MyUser user = (MyUser) authentication.getPrincipal();
         Instant now = Instant.now();
@@ -40,6 +41,7 @@ public class TokenGenerator {
         return accessTokenEncoder.encode(JwtEncoderParameters.from(claimsSet)).getTokenValue();
     }
 
+    // Creates a refresh token with a 30 day expiration time
     private String createRefreshToken(Authentication authentication) {
         MyUser user = (MyUser) authentication.getPrincipal();
         Instant now = Instant.now();
@@ -53,6 +55,8 @@ public class TokenGenerator {
 
         return refreshTokenEncoder.encode(JwtEncoderParameters.from(claimsSet)).getTokenValue();
     }
+
+    // Creates and returns a token object containing both access and refresh tokens
     public Token createToken(Authentication authentication) {
         if (!(authentication.getPrincipal() instanceof MyUser user)) {
             throw new BadCredentialsException(
@@ -60,8 +64,8 @@ public class TokenGenerator {
             );
         }
 
-        com.example.balancebuddy.entities.Token tokenDTO = new Token();
-        tokenDTO.setUserId(user.getUserID());
+        Token tokenDTO = new Token();
+        tokenDTO.setUserID(user.getUserID());
         tokenDTO.setAccessToken(createAccessToken(authentication));
 
         String refreshToken;
@@ -70,6 +74,7 @@ public class TokenGenerator {
             Instant expiresAt = jwt.getExpiresAt();
             Duration duration = Duration.between(now, expiresAt);
             long daysUntilExpired = duration.toDays();
+            // Generate new refresh token if it expires in less than 7 days
             if (daysUntilExpired < 7) {
                 refreshToken = createRefreshToken(authentication);
             } else {
