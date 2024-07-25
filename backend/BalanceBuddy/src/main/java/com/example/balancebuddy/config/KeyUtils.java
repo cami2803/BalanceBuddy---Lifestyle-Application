@@ -27,19 +27,15 @@ public class KeyUtils {
     @Autowired
     Environment environment;
 
-    // Path to the private key for access tokens
     @Value("${ACCESS_TOKEN_PRIVATE_KEY_PATH}")
     private String accessTokenPrivateKeyPath;
 
-    // Path to the public key for access tokens
     @Value("${ACCESS_TOKEN_PUBLIC_KEY_PATH}")
     private String accessTokenPublicKeyPath;
 
-    // Path to the private key for refresh tokens
     @Value("${REFRESH_TOKEN_PRIVATE_KEY_PATH}")
     private String refreshTokenPrivateKeyPath;
 
-    // Path to the public key for refresh tokens
     @Value("${REFRESH_TOKEN_PUBLIC_KEY_PATH}")
     private String refreshTokenPublicKeyPath;
 
@@ -75,9 +71,7 @@ public class KeyUtils {
         if (publicKeyFile.exists() && privateKeyFile.exists()) {
             log.info("loading keys from file: {}, {}", publicKeyPath, privateKeyPath);
             try {
-                // Initialize a KeyFactory for the RSA algorithm (RSA user creates and publishes a public key based
-                // on two large prime numbers (that are kept secret), and an auxiliary value. Messages
-                // can be encrypted by anyone, via the public key, but can only be decrypted by someone who knows the private key)
+                // Initialize a KeyFactory for the RSA algorithm
                 KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 
                 // Read the public key bytes from the file and generate a PublicKey object
@@ -136,22 +130,18 @@ public class KeyUtils {
         return keyPair;
     }
 
-    // Retrieves public key for access tokens
     public RSAPublicKey getAccessTokenPublicKey() {
         return (RSAPublicKey) getAccessTokenKeyPair().getPublic();
     }
 
-    // Retrieves private key for access tokens
     public RSAPrivateKey getAccessTokenPrivateKey() {
         return (RSAPrivateKey) getAccessTokenKeyPair().getPrivate();
     }
 
-    // Retrieves public key for refresh tokens
     public RSAPublicKey getRefreshTokenPublicKey() {
         return (RSAPublicKey) getRefreshTokenKeyPair().getPublic();
     }
 
-    // Retrieves private key for refresh tokens
     public RSAPrivateKey getRefreshTokenPrivateKey() {
         return (RSAPrivateKey) getRefreshTokenKeyPair().getPrivate();
     }

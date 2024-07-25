@@ -37,7 +37,6 @@ public class UserController {
     }
 
     // Endpoint to test the retrieval of the ID of a user
-    // id appears in the request url
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> user(@PathVariable Integer id) {
         return ResponseEntity.ok(UserDTO.from(userService.findByID(id)
@@ -45,7 +44,6 @@ public class UserController {
     }
 
     // More secure endpoint to retrieve the id of the current connected user
-    // id does not appear in the request url
     @GetMapping("/me")
     public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal MyUser authenticatedUser) {
         if (authenticatedUser == null) {

@@ -7,8 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class PasswordEncoderConfiguration {
-    // BCrypt is used for encoding because it will internally generate a random salt, so this means that each
-    // call will have a different result, therefore the password needs to be encoded only once.
+    // BCrypt is used for hashing the password
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
