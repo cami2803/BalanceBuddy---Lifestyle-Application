@@ -1,5 +1,7 @@
 package com.example.balancebuddy.config;
 
+import com.example.balancebuddy.services.UserService;
+import com.example.balancebuddy.utils.KeyUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +31,6 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -48,7 +49,7 @@ public class SecurityConfiguration {
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
-    UserDetailsManager userDetailsManager;
+    UserService userService;
 
     // For configuring the HTTP security
     @Bean
@@ -57,7 +58,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authorize) -> authorize
                         // Permit all requests to login and register endpoints
                         .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/token").permitAll()
-                        .anyRequest().authenticated() // All other requests must be authenticated
+                        .requestMatchers("/api/user/change-password").authenticated()
+                        .anyRequest().authenticated()// All other requests must be authenticated
                 )
                 // Disable CSRF (prevent the attackers from executing
                 // unauthorized actions on behalf of the authenticated users) protection
@@ -134,7 +136,7 @@ public class SecurityConfiguration {
     DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder);
-        provider.setUserDetailsService(userDetailsManager);
+        provider.setUserDetailsService(userService);
         return provider;
     }
 

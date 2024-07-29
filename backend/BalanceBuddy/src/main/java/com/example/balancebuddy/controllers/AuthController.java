@@ -2,6 +2,8 @@ package com.example.balancebuddy.controllers;
 
 import com.example.balancebuddy.config.TokenGenerator;
 import com.example.balancebuddy.entities.*;
+import com.example.balancebuddy.services.UserService;
+import com.example.balancebuddy.utils.ValidationUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,18 +19,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
-
 public class AuthController {
     @Autowired
-    UserDetailsManager userDetailsManager;
+    UserService userService;
     @Autowired
     TokenGenerator tokenGenerator;
     @Autowired
@@ -36,18 +37,23 @@ public class AuthController {
     @Autowired
     @Qualifier("jwtRefreshTokenAuthProvider")
     JwtAuthenticationProvider refreshTokenAuthProvider;
-
     @Autowired
     LogoutHandler logoutHandler;
 
     // Endpoint for user registration
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody SignUp signupDTO) {
+        List<String> errors = ValidationUtils.validateSignUp(signupDTO);
+
+        if (!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(errors);
+        }
+
         MyUser user = new MyUser(signupDTO.getEmail(), signupDTO.getPassword());
         user.setFirstname(signupDTO.getFirstname());
         user.setLastname(signupDTO.getLastname());
 
-        userDetailsManager.createUser(user);
+        userService.createUser(user);
 
         Authentication authentication = UsernamePasswordAuthenticationToken.authenticated(user, signupDTO.getPassword(), Collections.EMPTY_LIST);
 
@@ -57,6 +63,11 @@ public class AuthController {
     // Endpoint for user login
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody Login loginDTO) {
+        List<String> errors = ValidationUtils.validateLogin(loginDTO);
+        if (!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(errors);
+        }
+
         try {
             // Authenticate user
             Authentication authentication = daoAuthenticationProvider.authenticate(
@@ -73,7 +84,7 @@ public class AuthController {
     // Endpoint for creating a new access token from the refresh token
     @PostMapping("/token")
     public ResponseEntity getNewAccessToken(@RequestBody Token tokenDTO) {
-        try{
+        try {
             System.out.println("Received refresh token: " + tokenDTO.getRefreshToken());
             Authentication authentication = refreshTokenAuthProvider.authenticate(new BearerTokenAuthenticationToken(tokenDTO.getRefreshToken()));
 
@@ -81,10 +92,10 @@ public class AuthController {
 
             System.out.println("Generated new tokens");
             return ResponseEntity.ok(newTokens);
-        } catch (ExpiredJwtException e){
+        } catch (ExpiredJwtException e) {
             System.err.println("Refresh token expired");
             return ResponseEntity.status(401).body("Refresh token expired. Please log in again.");
-        } catch (JwtException e){
+        } catch (JwtException e) {
             System.err.println("Invalid refresh token");
             return ResponseEntity.status(401).body("Invalid refresh token");
         }

@@ -1,8 +1,12 @@
 package com.example.balancebuddy.entities;
 
-public class Login {
+import javax.validation.constraints.NotNull;
 
+public class Login {
+    @NotNull
     private String email;
+
+    @NotNull
     private String password;
 
     public String getEmail() {
