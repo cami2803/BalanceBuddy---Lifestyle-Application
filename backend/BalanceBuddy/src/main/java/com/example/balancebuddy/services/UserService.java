@@ -14,27 +14,20 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsManager {
+
     @PersistenceContext
     private EntityManager entityManager;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @Transactional
     public List<MyUser> getAllUsers() {
         return entityManager.createQuery("SELECT u FROM MyUser u", MyUser.class).getResultList();
-    }
-
-    @Transactional
-    public MyUser createUser(MyUser user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole(Role.USER);
-        entityManager.persist(user);
-        return user;
     }
 
     @Transactional
@@ -48,27 +41,6 @@ public class UserService implements UserDetailsManager {
         query.setParameter("email", email);
         List<MyUser> result = query.getResultList();
         return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
-    }
-
-    @Transactional
-    public void deleteUserByEmail(String email) {
-        findByEmail(email).ifPresent(entityManager::remove);
-    }
-
-    @Transactional
-    public MyUser updateUser(MyUser user) {
-        MyUser existingUser = entityManager.find(MyUser.class, user.getUserID());
-
-        if (existingUser != null) {
-            existingUser.setFirstname(user.getFirstname());
-            existingUser.setLastname(user.getLastname());
-            existingUser.setEmail(user.getEmail());
-            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
-            entityManager.merge(existingUser);
-            return existingUser;
-        } else {
-            throw new IllegalArgumentException("User not found!");
-        }
     }
 
     @Transactional
@@ -105,21 +77,36 @@ public class UserService implements UserDetailsManager {
         return userOptional.get();
     }
 
+    @Transactional
     @Override
     public void createUser(UserDetails userDetails) {
         MyUser myUser = (MyUser) userDetails;
-        createUser(myUser);
+        myUser.setPassword(passwordEncoder.encode(myUser.getPassword()));
+        myUser.setRole(Role.USER);
+        entityManager.persist(myUser);
     }
 
+    @Transactional
     @Override
     public void updateUser(UserDetails userDetails) {
         MyUser myUser = (MyUser) userDetails;
-        updateUser(myUser);
+        MyUser existingUser = entityManager.find(MyUser.class, myUser.getUserID());
+
+        if (existingUser != null) {
+            existingUser.setFirstname(myUser.getFirstname());
+            existingUser.setLastname(myUser.getLastname());
+            existingUser.setEmail(myUser.getEmail());
+            existingUser.setPassword(passwordEncoder.encode(myUser.getPassword()));
+            entityManager.merge(existingUser);
+        } else {
+            throw new IllegalArgumentException("User not found!");
+        }
     }
 
+    @Transactional
     @Override
-    public void deleteUser(String username) {
-        deleteUserByEmail(username);
+    public void deleteUser(String email) {
+        findByEmail(email).ifPresent(entityManager::remove);
     }
 
     @Override

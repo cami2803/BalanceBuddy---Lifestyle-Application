@@ -41,8 +41,8 @@ public class UserController {
     // Endpoint for creating a new user
     @PostMapping(value = "/insert")
     public ResponseEntity<MyUser> createUser(@RequestBody MyUser user) {
-        MyUser newUser = userService.createUser(user);
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+        userService.createUser(user);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     // Endpoint to test the retrieval of the ID of a user
@@ -71,7 +71,7 @@ public class UserController {
     // Endpoint to delete a user
     @DeleteMapping("delete/{email}")
     public ResponseEntity<?> deleteUser(@PathVariable String email) {
-        userService.deleteUserByEmail(email);
+        userService.deleteUser(email);
         return ResponseEntity.ok("User deleted successfully!");
     }
 

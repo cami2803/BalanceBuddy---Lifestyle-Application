@@ -16,7 +16,6 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -42,14 +41,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableMethodSecurity
 @EnableTransactionManagement
 public class SecurityConfiguration {
-    @Autowired
-    JWTToUserConvertor jwtToUserConverter;
-    @Autowired
-    KeyUtils keyUtils;
-    @Autowired
-    PasswordEncoder passwordEncoder;
-    @Autowired
-    UserService userService;
+    private final JWTToUserConvertor jwtToUserConverter;
+    private final KeyUtils keyUtils;
+    private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     // For configuring the HTTP security
     @Bean
@@ -58,7 +53,6 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authorize) -> authorize
                         // Permit all requests to login and register endpoints
                         .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/token").permitAll()
-                        .requestMatchers("/api/user/change-password").authenticated()
                         .anyRequest().authenticated()// All other requests must be authenticated
                 )
                 // Disable CSRF (prevent the attackers from executing
