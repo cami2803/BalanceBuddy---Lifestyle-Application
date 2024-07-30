@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,10 +22,10 @@ public class MyUser implements UserDetails {
     @Column(name = "userid")
     private int userID;
 
-    @NonNull
+    @NotNull
     private String firstname;
 
-    @NonNull
+    @NotNull
     private String lastname;
 
     @NonNull

@@ -1,4 +1,4 @@
-package com.example.balancebuddy.config;
+package com.example.balancebuddy.utils;
 
 import lombok.extern.slf4j.Slf4j;
 

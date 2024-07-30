@@ -1,5 +1,7 @@
 package com.example.balancebuddy.config;
 
+import com.example.balancebuddy.services.UserService;
+import com.example.balancebuddy.utils.KeyUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +16,6 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -29,7 +30,6 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -41,14 +41,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableMethodSecurity
 @EnableTransactionManagement
 public class SecurityConfiguration {
-    @Autowired
-    JWTToUserConvertor jwtToUserConverter;
-    @Autowired
-    KeyUtils keyUtils;
-    @Autowired
-    PasswordEncoder passwordEncoder;
-    @Autowired
-    UserDetailsManager userDetailsManager;
+    private final JWTToUserConvertor jwtToUserConverter;
+    private final KeyUtils keyUtils;
+    private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     // For configuring the HTTP security
     @Bean
@@ -57,7 +53,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authorize) -> authorize
                         // Permit all requests to login and register endpoints
                         .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/token").permitAll()
-                        .anyRequest().authenticated() // All other requests must be authenticated
+                        .anyRequest().authenticated()// All other requests must be authenticated
                 )
                 // Disable CSRF (prevent the attackers from executing
                 // unauthorized actions on behalf of the authenticated users) protection
@@ -134,7 +130,7 @@ public class SecurityConfiguration {
     DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder);
-        provider.setUserDetailsService(userDetailsManager);
+        provider.setUserDetailsService(userService);
         return provider;
     }
 
