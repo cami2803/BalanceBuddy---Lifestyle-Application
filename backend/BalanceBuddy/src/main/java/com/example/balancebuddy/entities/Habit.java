@@ -1,9 +1,7 @@
 package com.example.balancebuddy.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 
@@ -11,47 +9,26 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "habits")
 public class Habit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "habitid")
+    @Getter
+    @Setter
     private int habitID;
 
     @NotNull
     @Column(name = "name")
+    @Getter
+    @Setter
     private String name;
 
     @NotNull
     @Column(name = "unit")
+    @Getter
+    @Setter
     private String unit;
-
-    public Habit(){
-
-    }
-
-    public int getHabitID() {
-        return habitID;
-    }
-
-    public void setHabitID(int habitID) {
-        this.habitID = habitID;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void unit(String unit) {
-        this.unit = unit;
-    }
 }

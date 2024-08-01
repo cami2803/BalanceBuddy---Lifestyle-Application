@@ -1,7 +1,7 @@
 package com.example.balancebuddy.services;
 
 import com.example.balancebuddy.entities.MyUser;
-import com.example.balancebuddy.entities.Role;
+import com.example.balancebuddy.enums.Role;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;

@@ -1,24 +1,15 @@
 package com.example.balancebuddy.dtos;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class AddHabitToGoalDTO {
 
+    @Getter
+    @Setter
     private String name;
 
+    @Getter
+    @Setter
     private String target;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getTarget() {
-        return target;
-    }
-
-    public void setTarget(String target) {
-        this.target = target;
-    }
 }

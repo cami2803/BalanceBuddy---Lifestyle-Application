@@ -1,5 +1,6 @@
 package com.example.balancebuddy.entities;
 
+import com.example.balancebuddy.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,6 +15,7 @@ import java.util.List;
 @Entity
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "users")
 public class MyUser implements UserDetails {
 
@@ -51,28 +53,25 @@ public class MyUser implements UserDetails {
         this.password = password;
     }
 
-    public MyUser(){
-
-    }
-
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities(){
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
-    public String getUsername(){
+    public String getUsername() {
         return email;
     }
 
     @Override
-    public String getPassword(){
+    public String getPassword() {
         return password;
     }
 
-    public String convertUserIDToString(int userID){
+    public String convertUserIDToString(int userID) {
         return String.valueOf(userID);
     }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
