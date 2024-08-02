@@ -5,22 +5,15 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class GoalRequestDTO {
 
-    @Getter
-    @Setter
     private int userID;
 
-    @Getter
-    @Setter
     private Periodicity periodicity;
 
-    @Getter
-    @Setter
     private String target;
 
-    @Getter
-    @Setter
     private String habits;
 }

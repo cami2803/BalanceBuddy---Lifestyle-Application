@@ -11,24 +11,20 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "habits")
+@Getter
+@Setter
 public class Habit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "habitid")
-    @Getter
-    @Setter
     private int habitID;
 
     @NotNull
     @Column(name = "name")
-    @Getter
-    @Setter
     private String name;
 
     @NotNull
     @Column(name = "unit")
-    @Getter
-    @Setter
     private String unit;
 }

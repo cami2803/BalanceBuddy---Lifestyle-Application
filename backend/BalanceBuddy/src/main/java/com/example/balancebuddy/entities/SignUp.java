@@ -9,26 +9,20 @@ import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class SignUp {
 
     @NotNull
-    @Getter
-    @Setter
     private String email;
 
     @NotNull
-    @Getter
-    @Setter
     private String firstname;
 
     @NotNull
-    @Getter
-    @Setter
     private String lastname;
 
     @NotNull
-    @Getter
-    @Setter
     private String password;
 
     @Override
