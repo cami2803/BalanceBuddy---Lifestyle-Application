@@ -37,4 +37,8 @@ public class Goal {
     @NotNull
     @Column(name = "habits")
     private String habits; // Habits are stored as a semicolon-separated string
+
+    @NotNull
+    @Column(name = "progress")
+    private String progress; // User's progress is stored as a semicolon-separated string
 }

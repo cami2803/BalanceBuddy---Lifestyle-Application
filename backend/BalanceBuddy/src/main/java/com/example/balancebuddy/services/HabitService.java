@@ -2,8 +2,10 @@ package com.example.balancebuddy.services;
 
 import com.example.balancebuddy.dtos.HabitRequestDTO;
 import com.example.balancebuddy.entities.Habit;
+import com.example.balancebuddy.exceptions.HabitNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +36,11 @@ public class HabitService {
 
     @Transactional
     public Optional<Habit> findHabitByID(int id){
-        return Optional.ofNullable(entityManager.find(Habit.class, id));
+        Habit habit = entityManager.find(Habit.class, id);
+        if (habit == null) {
+            throw new HabitNotFoundException(id);
+        }
+        return Optional.of(habit);
     }
 
     @Transactional
@@ -47,6 +53,19 @@ public class HabitService {
         Habit habit = entityManager.find(Habit.class, id);
         if (habit != null){
             entityManager.remove(habit);
+        } else {
+            throw new HabitNotFoundException(id);
         }
+    }
+
+    @Transactional
+    public Habit findHabitByName(String name) {
+        TypedQuery<Habit> query = entityManager.createQuery("SELECT h FROM Habit h WHERE h.name = :name", Habit.class);
+        query.setParameter("name", name);
+        Habit habit = query.getResultStream().findFirst().orElse(null);
+        if (habit == null) {
+            throw new HabitNotFoundException(name);
+        }
+        return habit;
     }
 }

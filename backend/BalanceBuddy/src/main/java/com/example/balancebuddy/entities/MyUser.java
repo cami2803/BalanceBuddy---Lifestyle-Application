@@ -41,6 +41,12 @@ public class MyUser implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @NonNull
+    private boolean daily = true; // dailyReportNotification
+
+    @NonNull
+    private boolean reminder = true; // reminderNotifications
+
     public MyUser(String email, String password) {
         this.email = email;
         this.password = password;
@@ -91,6 +97,4 @@ public class MyUser implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
-
 }
