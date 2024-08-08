@@ -11,12 +11,15 @@ import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-@Data
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 public class MyUser implements UserDetails {
 
     @Id
@@ -40,6 +43,12 @@ public class MyUser implements UserDetails {
     @NonNull
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @NonNull
+    private boolean daily = true; // dailyReportNotification
+
+    @NonNull
+    private boolean reminder = true; // reminderNotifications
 
     public MyUser(String email, String password) {
         this.email = email;
@@ -91,6 +100,4 @@ public class MyUser implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
-
 }

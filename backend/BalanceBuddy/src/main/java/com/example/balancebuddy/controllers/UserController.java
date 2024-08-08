@@ -1,13 +1,14 @@
 package com.example.balancebuddy.controllers;
 
 import com.example.balancebuddy.dtos.ChangePasswordDTO;
+import com.example.balancebuddy.dtos.NotificationSettingsDTO;
 import com.example.balancebuddy.dtos.UserDTO;
 import com.example.balancebuddy.entities.MyUser;
 import com.example.balancebuddy.services.UserService;
 import com.example.balancebuddy.utils.ValidationUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,15 +22,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
+@RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    @Autowired
-    LogoutHandler logoutHandler;
 
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    private final LogoutHandler logoutHandler;
 
     // Endpoint to list all users in the database
     @GetMapping(value = "/list")
@@ -100,4 +97,31 @@ public class UserController {
             throw new RuntimeException(e);
         }
     }
+
+    // Endpoint to update notification settings
+    @PutMapping("/notifications/{id}")
+    public ResponseEntity<?> updateNotificationSettings(@PathVariable int id, @RequestBody NotificationSettingsDTO settingsDTO) {
+        try {
+            userService.updateNotificationSettings(id, settingsDTO);
+            return ResponseEntity.ok("Notification settings updated successfully!");
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    // Endpoint to get notification settings
+    @GetMapping("/notifications/{id}")
+    public ResponseEntity<NotificationSettingsDTO> getNotificationSettings(@PathVariable int id) {
+        try {
+            NotificationSettingsDTO settingsDTO = userService.getNotificationSettings(id);
+            return ResponseEntity.ok(settingsDTO);
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 }

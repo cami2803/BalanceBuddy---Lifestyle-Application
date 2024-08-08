@@ -1,14 +1,16 @@
 package com.example.balancebuddy.services;
 
+import com.example.balancebuddy.dtos.NotificationSettingsDTO;
 import com.example.balancebuddy.entities.MyUser;
 import com.example.balancebuddy.enums.Role;
+import com.example.balancebuddy.exceptions.PasswordChangeException;
+import com.example.balancebuddy.exceptions.UserNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
@@ -17,13 +19,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService implements UserDetailsManager {
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public List<MyUser> getAllUsers() {
@@ -32,7 +34,11 @@ public class UserService implements UserDetailsManager {
 
     @Transactional
     public Optional<MyUser> findByID(Integer id) {
-        return Optional.ofNullable(entityManager.find(MyUser.class, id));
+        MyUser user = entityManager.find(MyUser.class, id);
+        if (user == null) {
+            throw new UserNotFoundException(id);
+        }
+        return Optional.of(user);
     }
 
     @Transactional
@@ -40,7 +46,11 @@ public class UserService implements UserDetailsManager {
         TypedQuery<MyUser> query = entityManager.createQuery("SELECT u FROM MyUser u WHERE u.email = :email", MyUser.class);
         query.setParameter("email", email);
         List<MyUser> result = query.getResultList();
-        return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
+        if (result.isEmpty()) {
+            throw new UserNotFoundException(email);
+        } else {
+            return Optional.of(result.get(0));
+        }
     }
 
     @Transactional
@@ -57,10 +67,10 @@ public class UserService implements UserDetailsManager {
                 user.setPassword(passwordEncoder.encode(newPassword));
                 entityManager.merge(user);
             } else {
-                throw new IllegalArgumentException("Old password is incorrect!");
+                throw new PasswordChangeException("Old password is incorrect!");
             }
         } else {
-            throw new UsernameNotFoundException("User not found!");
+            throw new UserNotFoundException(email);
         }
     }
 
@@ -68,11 +78,11 @@ public class UserService implements UserDetailsManager {
         return findByEmail(email).isPresent();
     }
 
-    public MyUser loadUserByUsername(String email) throws UsernameNotFoundException {
+    public MyUser loadUserByUsername(String email) throws UserNotFoundException {
         Optional<MyUser> userOptional = findByEmail(email);
 
         if (userOptional.isEmpty()) {
-            throw new UsernameNotFoundException("User with email " + email + " not found");
+            throw new UserNotFoundException(email);
         }
         return userOptional.get();
     }
@@ -83,6 +93,8 @@ public class UserService implements UserDetailsManager {
         MyUser myUser = (MyUser) userDetails;
         myUser.setPassword(passwordEncoder.encode(myUser.getPassword()));
         myUser.setRole(Role.USER);
+        myUser.setReminder(true);
+        myUser.setDaily(true);
         entityManager.persist(myUser);
     }
 
@@ -97,20 +109,60 @@ public class UserService implements UserDetailsManager {
             existingUser.setLastname(myUser.getLastname());
             existingUser.setEmail(myUser.getEmail());
             existingUser.setPassword(passwordEncoder.encode(myUser.getPassword()));
+            existingUser.setDaily(myUser.isDaily());
+            existingUser.setReminder(myUser.isReminder());
             entityManager.merge(existingUser);
         } else {
-            throw new IllegalArgumentException("User not found!");
+            throw new UserNotFoundException(myUser.getUserID());
         }
     }
 
     @Transactional
     @Override
     public void deleteUser(String email) {
-        findByEmail(email).ifPresent(entityManager::remove);
+        Optional<MyUser> userOptional = findByEmail(email);
+        if (userOptional.isPresent()) {
+            MyUser user = userOptional.get();
+            try {
+                entityManager.remove(user);
+            } catch (Exception e) {
+                throw new UserNotFoundException(email);
+            }
+        } else {
+            throw new UserNotFoundException(email);
+        }
     }
+
 
     @Override
     public void changePassword(String oldPassword, String newPassword) {
+    }
+
+    @Transactional
+    public void updateNotificationSettings(int userID, NotificationSettingsDTO settingsDTO) {
+        MyUser user = entityManager.find(MyUser.class, userID);
+        if (user == null) {
+            throw new UserNotFoundException(userID);
+        }
+
+        user.setDaily(settingsDTO.isDaily());
+        user.setReminder(settingsDTO.isReminder());
+
+        entityManager.merge(user);
+    }
+
+    @Transactional
+    public NotificationSettingsDTO getNotificationSettings(int userID) {
+        MyUser user = entityManager.find(MyUser.class, userID);
+        if (user == null) {
+            throw new UserNotFoundException(userID);
+        }
+
+        NotificationSettingsDTO settingsDTO = new NotificationSettingsDTO();
+        settingsDTO.setDaily(user.isDaily());
+        settingsDTO.setReminder(user.isReminder());
+
+        return settingsDTO;
     }
 
 }

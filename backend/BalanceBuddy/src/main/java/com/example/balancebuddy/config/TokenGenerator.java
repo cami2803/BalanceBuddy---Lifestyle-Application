@@ -2,7 +2,7 @@ package com.example.balancebuddy.config;
 
 import com.example.balancebuddy.entities.Token;
 import com.example.balancebuddy.entities.MyUser;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -18,13 +18,13 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 @Component
+@RequiredArgsConstructor
 public class TokenGenerator {
-    @Autowired
-    JwtEncoder accessTokenEncoder;
 
-    @Autowired
+    private final JwtEncoder accessTokenEncoder;
+
     @Qualifier("jwtRefreshTokenEncoder")
-    JwtEncoder refreshTokenEncoder;
+    private final JwtEncoder refreshTokenEncoder;
 
     // Creates an access token with a 5 minute expiration time
     private String createAccessToken(Authentication authentication) {

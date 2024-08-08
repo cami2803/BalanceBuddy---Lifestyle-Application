@@ -6,7 +6,6 @@ import lombok.*;
 
 import javax.validation.constraints.NotNull;
 
-@Data
 @Entity
 @Builder
 @AllArgsConstructor
@@ -14,6 +13,8 @@ import javax.validation.constraints.NotNull;
 @Table(name = "goals")
 @Getter
 @Setter
+@ToString
+@EqualsAndHashCode
 public class Goal {
 
     @Id
@@ -37,4 +38,8 @@ public class Goal {
     @NotNull
     @Column(name = "habits")
     private String habits; // Habits are stored as a semicolon-separated string
+
+    @NotNull
+    @Column(name = "progress")
+    private String progress; // User's progress is stored as a semicolon-separated string
 }
