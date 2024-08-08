@@ -1,7 +1,7 @@
 package com.example.balancebuddy.controllers;
 
 import com.example.balancebuddy.services.ScheduledTasksService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/test")
+@RequiredArgsConstructor
 public class NotificationController {
 
-    @Autowired
-    private ScheduledTasksService scheduledTasksService;
+    private final ScheduledTasksService scheduledTasksService;
 
     // Endpoint to trigger periodic notifications manually
     @PostMapping("/trigger-notifications")

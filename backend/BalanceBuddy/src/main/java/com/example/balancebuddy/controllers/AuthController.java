@@ -7,7 +7,7 @@ import com.example.balancebuddy.utils.ValidationUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,18 +27,19 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
-    @Autowired
-    UserService userService;
-    @Autowired
-    TokenGenerator tokenGenerator;
-    @Autowired
-    DaoAuthenticationProvider daoAuthenticationProvider;
-    @Autowired
+
+    private final UserService userService;
+
+    private final TokenGenerator tokenGenerator;
+
+    private final DaoAuthenticationProvider daoAuthenticationProvider;
+
     @Qualifier("jwtRefreshTokenAuthProvider")
-    JwtAuthenticationProvider refreshTokenAuthProvider;
-    @Autowired
-    LogoutHandler logoutHandler;
+    private final JwtAuthenticationProvider refreshTokenAuthProvider;
+
+    private final LogoutHandler logoutHandler;
 
     // Endpoint for user registration
     @PostMapping("/register")

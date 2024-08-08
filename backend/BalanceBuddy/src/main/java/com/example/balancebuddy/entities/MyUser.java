@@ -11,12 +11,15 @@ import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-@Data
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 public class MyUser implements UserDetails {
 
     @Id

@@ -9,7 +9,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
@@ -19,13 +19,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService implements UserDetailsManager {
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public List<MyUser> getAllUsers() {
@@ -46,7 +46,7 @@ public class UserService implements UserDetailsManager {
         TypedQuery<MyUser> query = entityManager.createQuery("SELECT u FROM MyUser u WHERE u.email = :email", MyUser.class);
         query.setParameter("email", email);
         List<MyUser> result = query.getResultList();
-        if (result.isEmpty()){
+        if (result.isEmpty()) {
             throw new UserNotFoundException(email);
         } else {
             return Optional.of(result.get(0));
@@ -139,7 +139,7 @@ public class UserService implements UserDetailsManager {
     }
 
     @Transactional
-    public void updateNotificationSettings(int userID, NotificationSettingsDTO settingsDTO){
+    public void updateNotificationSettings(int userID, NotificationSettingsDTO settingsDTO) {
         MyUser user = entityManager.find(MyUser.class, userID);
         if (user == null) {
             throw new UserNotFoundException(userID);
@@ -152,7 +152,7 @@ public class UserService implements UserDetailsManager {
     }
 
     @Transactional
-    public NotificationSettingsDTO getNotificationSettings(int userID){
+    public NotificationSettingsDTO getNotificationSettings(int userID) {
         MyUser user = entityManager.find(MyUser.class, userID);
         if (user == null) {
             throw new UserNotFoundException(userID);

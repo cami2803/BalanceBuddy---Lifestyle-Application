@@ -5,7 +5,6 @@ import lombok.*;
 
 import javax.validation.constraints.NotNull;
 
-@Data
 @Entity
 @Builder
 @AllArgsConstructor
@@ -13,6 +12,8 @@ import javax.validation.constraints.NotNull;
 @Table(name = "habits")
 @Getter
 @Setter
+@ToString
+@EqualsAndHashCode
 public class Habit {
 
     @Id

@@ -9,20 +9,20 @@ import com.example.balancebuddy.exceptions.UserNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class GoalService {
 
     @PersistenceContext
     EntityManager entityManager;
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
 
     @Transactional
     public List<Goal> getAllGoals() {

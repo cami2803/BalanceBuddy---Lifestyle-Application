@@ -1,8 +1,8 @@
 package com.example.balancebuddy.utils;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -23,9 +23,10 @@ import java.util.Objects;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class KeyUtils {
-    @Autowired
-    Environment environment;
+
+    private final Environment environment;
 
     @Value("${ACCESS_TOKEN_PRIVATE_KEY_PATH}")
     private String accessTokenPrivateKeyPath;

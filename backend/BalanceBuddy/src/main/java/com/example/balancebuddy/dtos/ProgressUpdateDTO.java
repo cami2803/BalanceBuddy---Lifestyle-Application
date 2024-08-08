@@ -1,10 +1,8 @@
 package com.example.balancebuddy.dtos;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class ProgressUpdateDTO {
 
     private String habitName;

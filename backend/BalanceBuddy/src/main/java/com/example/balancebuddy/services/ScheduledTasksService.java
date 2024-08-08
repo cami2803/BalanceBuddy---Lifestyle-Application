@@ -6,35 +6,29 @@ import com.example.balancebuddy.entities.MyUser;
 import com.example.balancebuddy.subjects.UserActivity;
 import com.example.balancebuddy.utils.NotificationUtils;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ScheduledTasksService {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private NotificationUtils notificationUtils;
+    private final NotificationUtils notificationUtils;
 
-    @Autowired
-    private UserActivity userActivity;
+    private final UserActivity userActivity;
 
-    @Autowired
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
-    @Autowired
-    private ReportGeneratorService reportGeneratorService;
+    private final ReportGeneratorService reportGeneratorService;
 
-    @Autowired
-    private GoalService goalService;
+    private final GoalService goalService;
 
-    @Autowired
-    private HabitService habitService;
+    private final HabitService habitService;
 
     @PostConstruct
     public void init() {
