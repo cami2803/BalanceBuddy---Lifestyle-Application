@@ -107,7 +107,8 @@ public class AuthController {
     public ResponseEntity logout(HttpServletRequest request, HttpServletResponse response) {
         SecurityContextHolder.clearContext();
         logoutHandler.logout(request, response, null);
-        return ResponseEntity.ok("User logged out successfully.");
+        //return ResponseEntity.ok("User logged out successfully.");
+        return ResponseEntity.ok(Collections.singletonMap("message", "User logged out successfully."));
     }
 
     // Endpoint to test user access only if authenticated
