@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import styles from '../styles/LandingStyle';
 
 const LandingPage = ({ navigation }) => {
     return (
@@ -18,39 +19,5 @@ const LandingPage = ({ navigation }) => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#e0afa0',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    },
-    title: {
-        fontSize: 32,
-        fontWeight: 'bold',
-        color: '#573d3c',
-        marginBottom: 20,
-    },
-    description: {
-        fontSize: 18,
-        textAlign: 'center',
-        color: '#573d3c',
-        marginBottom: 40,
-    },
-    button: {
-        backgroundColor: '#f4f3ee',
-        paddingVertical: 15,
-        paddingHorizontal: 40,
-        borderRadius: 10,
-        marginVertical: 10,
-    },
-    buttonText: {
-        color: '#406e8e',
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-});
 
 export default LandingPage;
