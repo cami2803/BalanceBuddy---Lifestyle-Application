@@ -1,7 +1,6 @@
 package com.example.balancebuddy.dtos;
 
 import com.example.balancebuddy.enums.Periodicity;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

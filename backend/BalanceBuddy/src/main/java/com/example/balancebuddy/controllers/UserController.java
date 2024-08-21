@@ -3,12 +3,16 @@ package com.example.balancebuddy.controllers;
 import com.example.balancebuddy.dtos.ChangePasswordDTO;
 import com.example.balancebuddy.dtos.NotificationSettingsDTO;
 import com.example.balancebuddy.dtos.UserDTO;
+import com.example.balancebuddy.entities.Goal;
 import com.example.balancebuddy.entities.MyUser;
+import com.example.balancebuddy.services.GoalService;
 import com.example.balancebuddy.services.UserService;
 import com.example.balancebuddy.utils.ValidationUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,9 +28,14 @@ import java.util.List;
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     private final UserService userService;
 
     private final LogoutHandler logoutHandler;
+
+    private final GoalService goalService;
 
     // Endpoint to list all users in the database
     @GetMapping(value = "/list")
@@ -52,10 +61,14 @@ public class UserController {
     // More secure endpoint to retrieve the id of the current connected user
     @GetMapping("/me")
     public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal MyUser authenticatedUser) {
+        logger.debug("Received request for /me endpoint");
         if (authenticatedUser == null) {
+            logger.error("User is not authenticated");
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated");
         }
-        return ResponseEntity.ok(UserDTO.from(authenticatedUser));
+        UserDTO userDTO = UserDTO.from(authenticatedUser);
+        logger.debug("Returning user: {}", userDTO);
+        return ResponseEntity.ok(userDTO);
     }
 
     // Endpoint to update a user
@@ -122,6 +135,15 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+    }
+
+    @GetMapping("/getGoals/{userId}")
+    public ResponseEntity<List<Goal>> getGoalsByUserId(@PathVariable int userId) {
+        List<Goal> goals = goalService.findGoalsByUserId(userId);
+        if (goals.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(goals, HttpStatus.OK);
     }
 
 }

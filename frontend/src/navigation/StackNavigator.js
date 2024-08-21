@@ -4,6 +4,11 @@ import LandingPage from '../screens/LandingPage';
 import LoginPage from '../screens/LoginPage';
 import RegisterPage from '../screens/RegisterPage';
 import HomePage from '../screens/HomePage';
+import MainGoalPage from '../screens/MainGoalPage';
+import CurrentGoalPage from '../src/screens/CurrentGoalPage';
+import EditGoalPage from '../src/screens/EditGoalPage';
+import NewGoalPage from '../src/screens/NewGoalPage';
+import AddProgressPage from '../screens/AddProgressPage';
 
 const Stack = createStackNavigator();
 
@@ -14,6 +19,11 @@ const StackNavigator = () => {
             <Stack.Screen name="LoginPage" component={LoginPage} />
             <Stack.Screen name="RegisterPage" component={RegisterPage} />
             <Stack.Screen name="HomePage" component={HomePage} />
+            <Stack.Screen name="MainGoalPage" component={MainGoalPage} />
+            <Stack.Screen name="CurrentGoalPage" component={CurrentGoalPage} />
+            <Stack.Screen name="EditGoalPage" component={EditGoalPage} />
+            <Stack.Screen name="NewGoalPage" component={NewGoalPage} />
+            <Stack.Screen name="AddProgressPage" component={AddProgressPage} />
         </Stack.Navigator>
     );
 };

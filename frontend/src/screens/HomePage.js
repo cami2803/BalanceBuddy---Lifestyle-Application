@@ -41,7 +41,7 @@ const HomePage = ({ navigation }) => {
             </TouchableOpacity>
             <Text style={styles.title}>Home Page</Text>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('GoalPage')}>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('MainGoalPage')}>
                     <Text style={styles.buttonText}>See Goal</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('HabitsPage')}>

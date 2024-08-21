@@ -6,5 +6,6 @@ import lombok.Data;
 public class HabitRequestDTO {
 
     private String name;
+
     private String unit;
 }
