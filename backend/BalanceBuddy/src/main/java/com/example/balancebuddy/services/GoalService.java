@@ -8,8 +8,11 @@ import com.example.balancebuddy.exceptions.HabitNotFoundException;
 import com.example.balancebuddy.exceptions.UserNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +26,8 @@ public class GoalService {
     EntityManager entityManager;
 
     private final UserService userService;
+
+    private static final Logger logger = LoggerFactory.getLogger(GoalService.class);
 
     @Transactional
     public List<Goal> getAllGoals() {
@@ -62,19 +67,38 @@ public class GoalService {
 
     @Transactional
     public Goal updateGoal(int id, Goal updatedGoal) {
-        Goal existingGoal = entityManager.find(Goal.class, id);
-        if (existingGoal == null) {
-            throw new GoalNotFoundException(id);
+        try {
+            Goal existingGoal = entityManager.find(Goal.class, id);
+            if (existingGoal == null) {
+                throw new GoalNotFoundException(id);
+            }
+
+            existingGoal.setPeriodicity(updatedGoal.getPeriodicity());
+            existingGoal.setTarget(updatedGoal.getTarget());
+            existingGoal.setHabits(updatedGoal.getHabits());
+
+            if (updatedGoal.getProgress() != null) {
+                existingGoal.setProgress(updatedGoal.getProgress());
+            }
+
+            if (updatedGoal.getUser() != null && updatedGoal.getUser().getUserID() != 0) {
+                existingGoal.setUser(updatedGoal.getUser());
+            } else {
+                MyUser existingUser = entityManager.find(MyUser.class, existingGoal.getUser().getUserID());
+                if (existingUser != null) {
+                    existingGoal.setUser(existingUser);
+                } else {
+                    throw new RuntimeException("User information is missing or invalid");
+                }
+            }
+
+            return entityManager.merge(existingGoal);
+        } catch (Exception e) {
+            logger.error("Error in updateGoal: {}", e.getMessage());
+            throw e;
         }
-
-        existingGoal.setPeriodicity(updatedGoal.getPeriodicity());
-        existingGoal.setTarget(updatedGoal.getTarget());
-        existingGoal.setHabits(updatedGoal.getHabits());
-        existingGoal.setProgress(createInitialProgress(updatedGoal.getHabits()));
-
-        existingGoal.setUser(existingGoal.getUser());
-        return entityManager.merge(existingGoal);
     }
+
 
     @Transactional
     public void deleteGoal(int id) {
@@ -146,7 +170,6 @@ public class GoalService {
         }
     }
 
-
     // Method to initialize the progress for all habits with 0
     private String createInitialProgress(String habits) {
         String[] habitArray = habits.split(";");
@@ -159,4 +182,13 @@ public class GoalService {
         }
         return progressBuilder.toString();
     }
+
+    @Transactional
+    public List<Goal> findGoalsByUserId(int userID) {
+        String jpql = "SELECT g FROM Goal g WHERE g.user.userID = :userID";
+        TypedQuery<Goal> query = entityManager.createQuery(jpql, Goal.class);
+        query.setParameter("userID", userID);
+        return query.getResultList();
+    }
+
 }

@@ -6,5 +6,6 @@ import lombok.Data;
 public class ProgressUpdateDTO {
 
     private String habitName;
+
     private int progressValue;
 }
