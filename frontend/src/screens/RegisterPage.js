@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert, Modal, Button } from 'r
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import styles from '../styles/RegisterStyle';
+import API_BASE_URL from '../utils/environment_variables';
 
 const RegisterPage = ({ navigation }) => {
     const [firstname, setFirstname] = useState('');
@@ -37,9 +38,7 @@ const RegisterPage = ({ navigation }) => {
         }
 
         try {
-            const response = await fetch('http://10.0.2.2:8080/api/auth/register', { // emulator
-                //const response = await fetch('http://192.168.1.130:8080/api/auth/register', { // phone
-
+            const response = await fetch(`${API_BASE_URL}/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

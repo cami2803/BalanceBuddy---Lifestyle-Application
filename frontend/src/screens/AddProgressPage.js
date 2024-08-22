@@ -4,6 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import useAuthFetch from '../utils/useAuthFetch';
 import styles from '../styles/AddProgressStyle';
 import HomePage from './HomePage';
+import API_BASE_URL from '../utils/environment_variables';
 
 const AddProgressPage = ({ route, navigation }) => {
     const { goalId } = route.params;
@@ -15,8 +16,7 @@ const AddProgressPage = ({ route, navigation }) => {
     useEffect(() => {
         const fetchHabits = async () => {
             try {
-                const goalData = await fetchWithAuth(`http://10.0.2.2:8080/api/goals/${goalId}`); // emulator
-                // const goalData = await fetchWithAuth('http://192.168.1.130:8080/api/goals/${goalId}'); // phone
+                const goalData = await fetchWithAuth(`${API_BASE_URL}/goals/${goalId}`);
 
                 if (goalData && goalData.habits) {
                     const habitsList = goalData.habits.split(';');
@@ -41,7 +41,7 @@ const AddProgressPage = ({ route, navigation }) => {
         }
     
         try {
-            const response = await fetchWithAuth(`http://10.0.2.2:8080/api/goals/${goalId}/updateProgress`, {
+            const response = await fetchWithAuth(`${API_BASE_URL}/goals/${goalId}/updateProgress`, {
                 method: 'POST',
                 body: JSON.stringify({
                     habitName,
@@ -49,19 +49,23 @@ const AddProgressPage = ({ route, navigation }) => {
                 }),
             });
     
-            if (response === null || (response.status !== 200 && response.status !== 204)) {
-                throw new Error('No response from server');
+            if (response === null) {
+                // response status is "200 OK" but body is empty
+                Alert.alert('Success', 'Progress updated successfully!');
+                navigation.navigate(HomePage);
+            } else if (response.error) {
+                throw new Error(response.error);
+            } else {
+                Alert.alert('Success', 'Progress updated successfully!');
+                navigation.navigate(HomePage);
             }
-    
-            Alert.alert('Success', 'Progress updated successfully!');
-            navigation.navigate(HomePage);
         } catch (error) {
             console.error('Error updating progress:', error);
             Alert.alert('Error', 'Failed to update progress.');
         }
     };
     
-
+    
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.title}>Update Progress</Text>

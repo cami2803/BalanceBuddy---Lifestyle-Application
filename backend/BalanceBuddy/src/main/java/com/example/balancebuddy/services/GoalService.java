@@ -11,6 +11,8 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +26,8 @@ public class GoalService {
     EntityManager entityManager;
 
     private final UserService userService;
+
+    private static final Logger logger = LoggerFactory.getLogger(GoalService.class);
 
     @Transactional
     public List<Goal> getAllGoals() {
@@ -61,22 +65,6 @@ public class GoalService {
         return Optional.of(goal);
     }
 
-//    @Transactional
-//    public Goal updateGoal(int id, Goal updatedGoal) {
-//        Goal existingGoal = entityManager.find(Goal.class, id);
-//        if (existingGoal == null) {
-//            throw new GoalNotFoundException(id);
-//        }
-//
-//        updatedGoal.setUser(existingGoal.getUser());
-//        updatedGoal.setProgress(existingGoal.getProgress());
-//        existingGoal.setPeriodicity(updatedGoal.getPeriodicity());
-//        existingGoal.setTarget(updatedGoal.getTarget());
-//        existingGoal.setHabits(updatedGoal.getHabits());
-//
-//        return entityManager.merge(existingGoal);
-//    }
-
     @Transactional
     public Goal updateGoal(int id, Goal updatedGoal) {
         try {
@@ -106,7 +94,7 @@ public class GoalService {
 
             return entityManager.merge(existingGoal);
         } catch (Exception e) {
-            System.err.println("Error in updateGoal: " + e.getMessage());
+            logger.error("Error in updateGoal: {}", e.getMessage());
             throw e;
         }
     }

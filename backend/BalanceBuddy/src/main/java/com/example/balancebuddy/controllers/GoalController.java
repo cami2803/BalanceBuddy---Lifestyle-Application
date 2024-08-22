@@ -11,11 +11,12 @@ import com.example.balancebuddy.services.ReportGeneratorService;
 import com.example.balancebuddy.subjects.UserActivity;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -30,6 +31,8 @@ public class GoalController {
     private final ReportGeneratorService reportGenerator;
 
     private final UserActivity userActivity;
+
+    private static final Logger logger = LoggerFactory.getLogger(GoalController.class);
 
     @PostConstruct
     private void init() {
@@ -56,34 +59,22 @@ public class GoalController {
         return new ResponseEntity<>(goal, HttpStatus.OK);
     }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Goal> updateGoal(@PathVariable int id, @RequestBody Goal goal) {
-//        System.out.println("Updating goal with ID: " + id);
-//        System.out.println("Received goal data: " + goal);
-//
-//        goalService.findGoalByID(id).orElseThrow(() -> new RuntimeException("Goal not found!"));
-//        Goal updatedGoal = goalService.updateGoal(id, goal);
-//        return new ResponseEntity<>(updatedGoal, HttpStatus.OK);
-//    }
-
-
     @PutMapping("/{id}")
     public ResponseEntity<?> updateGoal(@PathVariable int id, @RequestBody Goal goal) {
         try {
-            System.out.println("Updating goal with ID: " + id);
-            System.out.println("Received goal data: " + goal);
+            logger.info("Updating goal with ID: {}", id);
+            logger.info("Received goal data: {}", goal);
 
             Goal updatedGoal = goalService.updateGoal(id, goal);
             return new ResponseEntity<>(updatedGoal, HttpStatus.OK);
         } catch (GoalNotFoundException e) {
-            System.err.println("Goal not found: " + e.getMessage());
+            logger.error("Goal not found: {}", e.getMessage());
             return new ResponseEntity<>("Goal not found: " + e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            System.err.println("Error updating goal: " + e.getMessage());
+            logger.error("Error updating goal: {}", e.getMessage());
             return new ResponseEntity<>("Error updating goal: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGoal(@PathVariable int id) {
@@ -105,7 +96,6 @@ public class GoalController {
     @PostMapping("/{id}/updateProgress")
     public ResponseEntity<Void> updateProgress(@PathVariable int id, @RequestBody ProgressUpdateDTO progressUpdateDTO) {
         goalService.updateProgress(id, progressUpdateDTO.getHabitName(), progressUpdateDTO.getProgressValue());
-        //return new ResponseEntity<>(HttpStatus.OK);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

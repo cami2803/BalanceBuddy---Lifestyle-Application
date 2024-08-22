@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import styles from '../styles/CurrentGoalStyle';
 import useAuthFetch from '../utils/useAuthFetch';
+import API_BASE_URL from '../utils/environment_variables';
 
 const CurrentGoalPage = ({ route, navigation }) => {
     const { goalId } = route.params;
@@ -12,12 +13,10 @@ const CurrentGoalPage = ({ route, navigation }) => {
     useEffect(() => {
         const fetchGoal = async () => {
             try {
-                const data = await fetchWithAuth(`http://10.0.2.2:8080/api/goals/${goalId}`); //emulator
-                // const data = await fetchWithAuth('http://192.168.1.130:8080/api/goals/${goadId}'); // phone
+                const data = await fetchWithAuth(`${API_BASE_URL}/goals/${goalId}`);
                 if (data) {
                     setGoal(data);
-                    const habitsData = await fetchWithAuth('http://10.0.2.2:8080/api/habits'); // emulator
-                    // const habitsData = await fetchWithAuth('http://192.168.1.130:8080/api/habits'); // phone
+                    const habitsData = await fetchWithAuth(`${API_BASE_URL}/habits`);
                     if (habitsData) {
                         // Create a map of habit name to unit
                         const habitMap = habitsData.reduce((map, habit) => {

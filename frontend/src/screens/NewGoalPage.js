@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import useAuthFetch from '../utils/useAuthFetch';
 import { Picker } from '@react-native-picker/picker';
 import styles from '../styles/NewGoalStyle';
+import API_BASE_URL from '../utils/environment_variables';
 
 const NewGoalPage = () => {
     const [habits, setHabits] = useState([]);
@@ -15,7 +16,7 @@ const NewGoalPage = () => {
     const [userID, setUserID] = useState(null);
 
     useEffect(() => {
-        fetchWithAuth('http://10.0.2.2:8080/api/habits')
+        fetchWithAuth(`${API_BASE_URL}/habits`)
             .then(data => {
                 if (Array.isArray(data)) {
                     setHabits(data);
@@ -29,7 +30,7 @@ const NewGoalPage = () => {
     }, [fetchWithAuth]);
 
     useEffect(() => {
-        fetchWithAuth('http://10.0.2.2:8080/api/user/me')
+        fetchWithAuth(`${API_BASE_URL}/user/me`)
             .then(userData => {
                 if (userData && userData.id) {
                     setUserID(userData.id);
@@ -71,7 +72,7 @@ const NewGoalPage = () => {
             habits: habitNames, 
         };
 
-        fetchWithAuth('http://10.0.2.2:8080/api/goals', {
+        fetchWithAuth(`${API_BASE_URL}/goals`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

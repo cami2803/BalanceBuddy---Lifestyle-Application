@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import styles from '../styles/MainGoalStyle';
 import CircularProgress from '../components/CircularProgress';
 import useAuthFetch from '../utils/useAuthFetch';
+import API_BASE_URL from '../utils/environment_variables';
 
 const MainGoalPage = ({ navigation }) => {
     const [goal, setGoal] = useState(null);
@@ -11,16 +12,14 @@ const MainGoalPage = ({ navigation }) => {
 
     const fetchCurrentUserAndGoal = async () => {
         try {
-            const userResponse = await fetchWithAuth('http://10.0.2.2:8080/api/user/me'); // emulator
-            // const userResponse = await fetchWithAuth('http://192.168.1.130:8080/api/user/me'); // phone
+            const userResponse = await fetchWithAuth(`${API_BASE_URL}/user/me`);
             if (!userResponse || !userResponse.id) {
                 console.error('No user ID found.');
                 setGoal(null);
                 return;
             }
 
-            const goalResponse = await fetchWithAuth(`http://10.0.2.2:8080/api/user/getGoals/${userResponse.id}`); // emulator
-            // const goalResponse = await fetchWithAuth('http://192.168.1.130:8080/api/user/getGoals/${userResponse.id}`); // phone
+            const goalResponse = await fetchWithAuth(`${API_BASE_URL}/user/getGoals/${userResponse.id}`);
             if (goalResponse && Array.isArray(goalResponse) && goalResponse.length > 0) {
                 setGoal(goalResponse[0]);
             } else {

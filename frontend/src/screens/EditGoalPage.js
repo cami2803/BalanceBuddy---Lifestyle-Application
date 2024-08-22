@@ -3,6 +3,8 @@ import { Text, TouchableOpacity, TextInput, Alert, View, FlatList } from 'react-
 import { Picker } from '@react-native-picker/picker';
 import styles from '../styles/EditGoalStyle';
 import useAuthFetch from '../utils/useAuthFetch';
+import HomePage from './HomePage';
+import API_BASE_URL from '../utils/environment_variables';
 
 const EditGoalPage = ({ route, navigation }) => {
     const { goalId } = route.params;
@@ -15,17 +17,12 @@ const EditGoalPage = ({ route, navigation }) => {
     useEffect(() => {
         const fetchGoalData = async () => {
             try {
-                const goalData = await fetchWithAuth(`http://10.0.2.2:8080/api/goals/${goalId}`);
+                const goalData = await fetchWithAuth(`${API_BASE_URL}/goals/${goalId}`);
                 if (goalData && !goalData.error) {
                     setGoal(goalData);
 
-                    console.log('Fetched goal data:', goalData);
-
                     const habits = goalData.habits ? goalData.habits.split(';') : [];
                     const targets = goalData.target ? goalData.target.split(';') : [];
-
-                    console.log('Habits:', habits);
-                    console.log('Targets:', targets);
 
                     if (habits.length === targets.length) {
                         const habitTargets = habits.reduce((acc, habit, index) => {
@@ -69,7 +66,7 @@ const EditGoalPage = ({ route, navigation }) => {
         };
     
         try {
-            const response = await fetchWithAuth(`http://10.0.2.2:8080/api/goals/${goalId}`, {
+            const response = await fetchWithAuth(`${API_BASE_URL}/goals/${goalId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -83,7 +80,7 @@ const EditGoalPage = ({ route, navigation }) => {
     
             if (response.status === 200 || response.status === undefined) {
                 Alert.alert('Success', 'Goal updated successfully!');
-                navigation.goBack();
+                navigation.navigate(HomePage);
             } else {
                 Alert.alert('Error', `Unexpected response status: ${response.status}`);
             }
@@ -106,23 +103,20 @@ const EditGoalPage = ({ route, navigation }) => {
                     text: 'Delete',
                     onPress: async () => {
                         try {
-                            const response = await fetchWithAuth(`http://10.0.2.2:8080/api/goals/${goalId}`, {
+                            const response = await fetchWithAuth(`${API_BASE_URL}/goals/${goalId}`, {
                                 method: 'DELETE',
                             });
-
-                            if (response.error) {
-                                throw new Error(response.error);
-                            }
-
-                            if (response.status === 204) {
+                            if (response === null) {
                                 Alert.alert('Success', 'Goal deleted successfully!');
                                 navigation.navigate('HomePage');
+                            } else if (response && response.error) {
+                                throw new Error(response.error);
                             } else {
-                                Alert.alert('Error', `Unexpected response status: ${response.status}`);
+                                Alert.alert('Error', `Unexpected response: ${JSON.stringify(response)}`);
                             }
                         } catch (error) {
                             console.error('Error deleting goal:', error);
-                            Alert.alert('Error', 'Failed to delete goal.');
+                            Alert.alert('Error', `Failed to delete goal: ${error.message}`);
                         }
                     },
                 },

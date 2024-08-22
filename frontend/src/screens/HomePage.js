@@ -2,13 +2,13 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../styles/HomeStyle';
+import API_BASE_URL from '../utils/environment_variables';
 
 const HomePage = ({ navigation }) => {
     const handleLogout = async () => {
         try {
             const accessToken = await AsyncStorage.getItem('accessToken');
-            const response = await fetch('http://10.0.2.2:8080/api/auth/logout', { // emulator
-            //const response = await fetch('http://192.168.1.130:8080/api/auth/logout', { // phone
+            const response = await fetch(`${API_BASE_URL}/auth/logout`, { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import API_BASE_URL from './environment_variables';
 
 const useAuthFetch = () => {
     const [loading, setLoading] = useState(false);
@@ -39,17 +40,22 @@ const useAuthFetch = () => {
                 }
             }
     
-            if (response.status === 204) {
-                return { status: 204 };
-            }
-    
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Error response:', response);
-                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+            if (response.status === 204 || (response.status === 200 && response.headers.get('Content-Length') === '0')) {
+                return null;
             }
 
-            return await response.json();
+            const contentType = response.headers.get('Content-Type');
+            if (contentType && contentType.includes('application/json')) {
+                return await response.json();
+            }
+
+            // if body response is empty content
+            const responseText = await response.text();
+            if (!responseText) {
+                return null;
+            }
+            return responseText;
+            
         } catch (error) {
             console.error('Error fetching data:', error);
             if (error.message.includes('Failed to renew access token')) {
@@ -61,13 +67,13 @@ const useAuthFetch = () => {
         }
     }, [navigation]);
 
+
     const renewAccessToken = useCallback(async () => {
         try {
             const refreshToken = await AsyncStorage.getItem('refreshToken');
             if (!refreshToken) throw new Error('No refresh token available');
             
-            const response = await fetch('http://10.0.2.2:8080/api/auth/token', { // emulator
-                // const response = await fetch('http://192.168.1.130:8080/api/auth/token', { // phone
+            const response = await fetch(`${API_BASE_URL}/auth/token`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ refreshToken }),
