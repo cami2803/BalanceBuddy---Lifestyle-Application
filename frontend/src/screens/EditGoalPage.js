@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Text, TouchableOpacity, TextInput, Alert, View, FlatList } from 'react-native';
+import { Text, TouchableOpacity, TextInput, Alert, View, FlatList, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import styles from '../styles/EditGoalStyle';
 import useAuthFetch from '../utils/useAuthFetch';
-import HomePage from './HomePage';
 import API_BASE_URL from '../utils/environment_variables';
 
 const EditGoalPage = ({ route, navigation }) => {
@@ -12,6 +11,10 @@ const EditGoalPage = ({ route, navigation }) => {
     const [habitTargets, setHabitTargets] = useState({});
     const [selectedPeriodicity, setSelectedPeriodicity] = useState('DAILY');
     const [habitOptions, setHabitOptions] = useState([]);
+    const [availableHabits, setAvailableHabits] = useState([]);
+    const [showAddHabitModal, setShowAddHabitModal] = useState(false);
+    const [selectedHabit, setSelectedHabit] = useState('');
+    const [newHabitTarget, setNewHabitTarget] = useState('');
     const { fetchWithAuth } = useAuthFetch();
 
     useEffect(() => {
@@ -46,26 +49,52 @@ const EditGoalPage = ({ route, navigation }) => {
         fetchGoalData();
     }, [goalId]);
 
+    useEffect(() => {
+        const fetchAvailableHabits = async () => {
+            try {
+                const habitsData = await fetchWithAuth(`${API_BASE_URL}/habits`);
+                if (habitsData && !habitsData.error) {
+                    setAvailableHabits(habitsData.map(habit => habit.name)); 
+                } else {
+                    console.error('Error fetching available habits:', habitsData.error);
+                }
+            } catch (error) {
+                console.error('Error fetching available habits:', error);
+            }
+        };
+        fetchAvailableHabits();
+    }, []);
+    
+
     const handleTargetChange = (habit, value) => {
         setHabitTargets(prevTargets => ({ ...prevTargets, [habit]: value }));
     };
 
-    const handleUpdateGoal = async () => {
-        if (!selectedPeriodicity || !Object.keys(habitTargets).length) {
-            Alert.alert('Error', 'Periodicity and habits are required.');
+    const handleAddHabit = async () => {
+        if (!selectedHabit || !newHabitTarget) {
+            Alert.alert('Error', 'Habit and target value are required.');
             return;
         }
+
+        const updatedHabitTargets = { ...habitTargets, [selectedHabit]: newHabitTarget };
+        const updatedHabitOptions = [...habitOptions, selectedHabit];
+        const updatedProgress = goal.progress ? goal.progress.split(';') : [];
+        updatedProgress.push('0');
     
-        const updatedGoal = {
-            goalID: goalId,
-            user: goal.user ? { userID: goal.user.userID } : null,
-            periodicity: selectedPeriodicity,
-            target: Object.values(habitTargets).join(';'),
-            habits: Object.keys(habitTargets).join(';'),
-            progress: goal.progress || '',
-        };
+        setHabitTargets(updatedHabitTargets);
+        setHabitOptions(updatedHabitOptions);
+        setShowAddHabitModal(false);
     
         try {
+            const updatedGoal = {
+                goalID: goalId,
+                user: goal.user ? { userID: goal.user.userID } : null,
+                periodicity: selectedPeriodicity,
+                target: Object.values(updatedHabitTargets).join(';'),
+                habits: Object.keys(updatedHabitTargets).join(';'),
+                progress: updatedProgress.join(';'),
+            };
+    
             const response = await fetchWithAuth(`${API_BASE_URL}/goals/${goalId}`, {
                 method: 'PUT',
                 headers: {
@@ -80,7 +109,6 @@ const EditGoalPage = ({ route, navigation }) => {
     
             if (response.status === 200 || response.status === undefined) {
                 Alert.alert('Success', 'Goal updated successfully!');
-                navigation.navigate(HomePage);
             } else {
                 Alert.alert('Error', `Unexpected response status: ${response.status}`);
             }
@@ -88,8 +116,95 @@ const EditGoalPage = ({ route, navigation }) => {
             console.error('Error updating goal:', error.message);
             Alert.alert('Error', `Failed to update goal: ${error.message}`);
         }
-    };    
+    };
+
+    const handleDeleteHabit = async (habitToDelete) => {
+        const updatedHabitTargets = { ...habitTargets };
+        const updatedHabitOptions = habitOptions.filter(habit => habit !== habitToDelete);
+        const updatedProgress = goal.progress ? goal.progress.split(';') : [];
+        const habitIndex = Object.keys(habitTargets).indexOf(habitToDelete);
+        
+        delete updatedHabitTargets[habitToDelete];
+        if (habitIndex > -1) {
+            updatedProgress.splice(habitIndex, 1); 
+        }
     
+        try {
+            const updatedGoal = {
+                goalID: goalId,
+                user: goal.user ? { userID: goal.user.userID } : null,
+                periodicity: selectedPeriodicity,
+                target: Object.values(updatedHabitTargets).join(';'),
+                habits: updatedHabitOptions.join(';'),
+                progress: updatedProgress.join(';'),
+            };
+    
+            const response = await fetchWithAuth(`${API_BASE_URL}/goals/${goalId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedGoal),
+            });
+    
+            if (response.error) {
+                throw new Error(response.error);
+            }
+    
+            if (response.status === 200 || response.status === undefined) {
+                Alert.alert('Success', 'Habit deleted successfully!');
+                setHabitTargets(updatedHabitTargets);
+                setHabitOptions(updatedHabitOptions);
+            } else {
+                Alert.alert('Error', `Unexpected response status: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('Error updating goal:', error.message);
+            Alert.alert('Error', `Failed to delete habit: ${error.message}`);
+        }
+    };
+    
+    
+    const handleUpdateGoal = async () => {
+        if (!selectedPeriodicity || !Object.keys(habitTargets).length) {
+            Alert.alert('Error', 'Periodicity and habits are required.');
+            return;
+        }
+
+        const updatedGoal = {
+            goalID: goalId,
+            user: goal.user ? { userID: goal.user.userID } : null,
+            periodicity: selectedPeriodicity,
+            target: Object.values(habitTargets).join(';'),
+            habits: Object.keys(habitTargets).join(';'),
+            progress: goal.progress || '',
+        };
+
+        try {
+            const response = await fetchWithAuth(`${API_BASE_URL}/goals/${goalId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedGoal),
+            });
+
+            if (response.error) {
+                throw new Error(response.error);
+            }
+
+            if (response.status === 200 || response.status === undefined) {
+                Alert.alert('Success', 'Goal updated successfully!');
+                navigation.navigate('HomePage');
+            } else {
+                Alert.alert('Error', `Unexpected response status: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('Error updating goal:', error.message);
+            Alert.alert('Error', `Failed to update goal: ${error.message}`);
+        }
+    };
+
     const handleDeleteGoal = async () => {
         Alert.alert(
             'Confirm Deletion',
@@ -152,11 +267,21 @@ const EditGoalPage = ({ route, navigation }) => {
                 keyboardType="numeric"
                 placeholder="Enter target"
             />
+            <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => handleDeleteHabit(item)}
+            >
+                <Text style={styles.deleteButtonText}>Delete</Text>
+            </TouchableOpacity>
         </View>
     );
+      
 
     const renderFooter = () => (
         <View style={styles.footerContainer}>
+            <TouchableOpacity style={styles.button} onPress={() => setShowAddHabitModal(true)}>
+                <Text style={styles.buttonText}>Add More Habits</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={handleUpdateGoal}>
                 <Text style={styles.buttonText}>Update Goal</Text>
             </TouchableOpacity>
@@ -195,6 +320,41 @@ const EditGoalPage = ({ route, navigation }) => {
                 ListFooterComponent={renderFooter}
                 contentContainerStyle={styles.flatListContent}
             />
+
+            <Modal
+                transparent={true}
+                visible={showAddHabitModal}
+                onRequestClose={() => setShowAddHabitModal(false)}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Add New Habit</Text>
+                        <Picker
+                            selectedValue={selectedHabit}
+                            style={styles.picker}
+                            onValueChange={(itemValue) => setSelectedHabit(itemValue)}
+                        >
+                            {availableHabits.map((habit, index) => (
+                                <Picker.Item key={index} label={habit} value={habit} />
+                            ))}
+                        </Picker>
+
+                        <TextInput
+                            style={styles.input}
+                            value={newHabitTarget}
+                            onChangeText={setNewHabitTarget}
+                            keyboardType="numeric"
+                            placeholder="Enter target"
+                        />
+                        <TouchableOpacity style={styles.button} onPress={handleAddHabit}>
+                            <Text style={styles.buttonText}>Add Habit</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.button} onPress={() => setShowAddHabitModal(false)}>
+                            <Text style={styles.buttonText}>Cancel</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };

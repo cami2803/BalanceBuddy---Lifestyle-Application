@@ -35,8 +35,13 @@ const AddProgressStyle = StyleSheet.create({
     button: {
         backgroundColor: '#f4f3ee',
         padding: 16,
-        borderRadius: 4,
         alignItems: 'center',
+        borderRadius: 10, 
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+        elevation: 3,
     },
     buttonText: {
         color: '#406e8e',

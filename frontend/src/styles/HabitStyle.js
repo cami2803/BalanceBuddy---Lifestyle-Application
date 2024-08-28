@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-const HomeStyle = StyleSheet.create({
+const HabitStyle = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
@@ -20,9 +20,9 @@ const HomeStyle = StyleSheet.create({
     button: {
         backgroundColor: '#f4f3ee',
         padding: 15,
+        borderRadius: 10, 
         alignItems: 'center',
         marginBottom: 10,
-        borderRadius: 10, 
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -34,24 +34,30 @@ const HomeStyle = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
-    logoutButton: {
-        position: 'absolute',
-        top: 20,
-        right: 20,
+    habitItem: {
         backgroundColor: '#f4f3ee',
-        padding: 10,
-        borderRadius: 10, 
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'flex-start', 
+        marginBottom: 10,
+        width: '90%', 
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 3,
         elevation: 3,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
-    logoutButtonText: {
-        color: '#406e8e',
+    habitText: {
+        color: '#573d3c',
         fontSize: 16,
         fontWeight: 'bold',
     },
+    flatListContent: {
+        paddingBottom: 30,
+        paddingHorizontal: 10,
+    },
 });
 
-export default HomeStyle;
+export default HabitStyle;

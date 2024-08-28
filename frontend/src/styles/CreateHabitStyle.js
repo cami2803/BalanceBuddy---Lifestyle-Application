@@ -1,28 +1,30 @@
 import { StyleSheet } from 'react-native';
 
-const HomeStyle = StyleSheet.create({
+const CreateHabitStyle = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#e0afa0',
+        paddingHorizontal: 20,
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         color: '#573d3c',
-        marginBottom: 20,
+        marginBottom: 30,
     },
     buttonContainer: {
-        width: '80%',
+        width: '100%',
         marginTop: 20,
+        alignItems: 'center',
     },
     button: {
         backgroundColor: '#f4f3ee',
-        padding: 15,
+        paddingVertical: 15,
+        paddingHorizontal: 25,
         alignItems: 'center',
-        marginBottom: 10,
-        borderRadius: 10, 
+        borderRadius: 10,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -31,27 +33,26 @@ const HomeStyle = StyleSheet.create({
     },
     buttonText: {
         color: '#406e8e',
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 'bold',
     },
-    logoutButton: {
-        position: 'absolute',
-        top: 20,
-        right: 20,
+    input: {
+        height: 50,
+        borderColor: '#ddd',
+        borderWidth: 1,
+        borderRadius: 10,
+        paddingHorizontal: 15,
+        marginVertical: 10,
+        fontSize: 16,
         backgroundColor: '#f4f3ee',
-        padding: 10,
-        borderRadius: 10, 
+        color: '#406e8e',
+        width: '100%',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 3,
-        elevation: 3,
-    },
-    logoutButtonText: {
-        color: '#406e8e',
-        fontSize: 16,
-        fontWeight: 'bold',
+        elevation: 2,
     },
 });
 
-export default HomeStyle;
+export default CreateHabitStyle;

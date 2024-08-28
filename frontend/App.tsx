@@ -10,6 +10,9 @@ import CurrentGoalPage from './src/screens/CurrentGoalPage';
 import EditGoalPage from './src/screens/EditGoalPage';
 import NewGoalPage from './src/screens/NewGoalPage';
 import AddProgressPage from './src/screens/AddProgressPage';
+import HabitsPage from './src/screens/HabitsPage';
+import CreateHabitPage from './src/screens/CreateHabitPage';
+import EditHabitsPage from './src/screens/EditHabitsPage';
 
 type RootStackParamList = {
     LandingPage: undefined;
@@ -21,6 +24,9 @@ type RootStackParamList = {
     EditGoalPage: undefined;
     NewGoalPage: undefined;
     AddProgressPage: undefined;
+    HabitsPage: undefined;
+    CreateHabitPage: undefined;
+    EditHabitsPage: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -38,6 +44,9 @@ const App = () => {
                 <Stack.Screen name="EditGoalPage" component={EditGoalPage} options={{ title: 'Edit Goal Page' }}/>
                 <Stack.Screen name="NewGoalPage" component={NewGoalPage} options={{ title: 'New Goal Page' }}/>
                 <Stack.Screen name="AddProgressPage" component={AddProgressPage} options={{ title: 'Add Progress Page' }} />
+                <Stack.Screen name="HabitsPage" component={HabitsPage} options={{ title: 'Habits Page' }} />
+                <Stack.Screen name="CreateHabitPage" component={CreateHabitPage} options={{ title: 'Create Habit Page' }} />
+                <Stack.Screen name="EditHabitsPage" component={EditHabitsPage} options={{ title: 'Edit Habits Page' }} />
             </Stack.Navigator>
         </NavigationContainer>
     );
