@@ -9,7 +9,10 @@ import MainGoalPage from './src/screens/MainGoalPage';
 import CurrentGoalPage from './src/screens/CurrentGoalPage';
 import EditGoalPage from './src/screens/EditGoalPage';
 import NewGoalPage from './src/screens/NewGoalPage';
-import AddProgressPage from './screens/AddProgressPage';
+import AddProgressPage from './src/screens/AddProgressPage';
+import HabitsPage from './src/screens/HabitsPage';
+import CreateHabitPage from './src/screens/CreateHabitPage';
+import EditHabitsPage from './src/screens/EditHabitsPage';
 
 const Stack = createStackNavigator();
 
@@ -26,6 +29,9 @@ const App = () => {
                 <Stack.Screen name="EditGoalPage" component={EditGoalPage} options={{ title: 'Edit Goal Page' }}/>
                 <Stack.Screen name="NewGoalPage" component={NewGoalPage} options={{ title: 'New Goal Page' }}/>
                 <Stack.Screen name="AddProgressPage" component={AddProgressPage} options={{ title: 'Add Progress Page' }} />
+                <Stack.Screen name="HabitsPage" component={HabitsPage} options={{ title: 'Habits Page' }} />
+                <Stack.Screen name="CreateHabitPage" component={CreateHabitPage} options={{ title: 'Create Habit Page' }} />
+                <Stack.Screen name="EditHabitsPage" component={EditHabitsPage} options={{ title: 'Edit Habits Page' }} />
             </Stack.Navigator>
         </NavigationContainer>
     );

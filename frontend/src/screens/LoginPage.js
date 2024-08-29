@@ -66,9 +66,6 @@ const LoginPage = ({ navigation }) => {
                 placeholderTextColor="#406e8e"
             />
             {error ? <Text style={styles.errorText}>{error}</Text> : null}
-            <TouchableOpacity style={styles.forgotPasswordButton}>
-                <Text style={styles.forgotPasswordText}>Forgot my password</Text>
-            </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={handleLogin}>
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>

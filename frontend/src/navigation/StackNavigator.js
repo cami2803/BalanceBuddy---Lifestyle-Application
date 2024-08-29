@@ -9,6 +9,9 @@ import CurrentGoalPage from '../src/screens/CurrentGoalPage';
 import EditGoalPage from '../src/screens/EditGoalPage';
 import NewGoalPage from '../src/screens/NewGoalPage';
 import AddProgressPage from '../screens/AddProgressPage';
+import HabitsPage from '../screens/HabitsPage';
+import CreateHabitPage from '../screens/CreateHabitPage';
+import EditHabitsPage from '../screens/EditHabitsPage';
 
 const Stack = createStackNavigator();
 
@@ -24,6 +27,9 @@ const StackNavigator = () => {
             <Stack.Screen name="EditGoalPage" component={EditGoalPage} />
             <Stack.Screen name="NewGoalPage" component={NewGoalPage} />
             <Stack.Screen name="AddProgressPage" component={AddProgressPage} />
+            <Stack.Screen name="HabitsPage" component={HabitsPage} />
+            <Stack.Screen name="CreateHabitPage" component={CreateHabitPage} />
+            <Stack.Screen name="EditHabitsPage" component={EditHabitsPage} />
         </Stack.Navigator>
     );
 };
