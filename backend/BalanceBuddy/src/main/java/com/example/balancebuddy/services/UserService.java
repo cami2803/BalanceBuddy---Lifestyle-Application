@@ -1,6 +1,7 @@
 package com.example.balancebuddy.services;
 
 import com.example.balancebuddy.dtos.NotificationSettingsDTO;
+import com.example.balancebuddy.dtos.UpdateUserDTO;
 import com.example.balancebuddy.entities.MyUser;
 import com.example.balancebuddy.enums.Role;
 import com.example.balancebuddy.exceptions.PasswordChangeException;
@@ -99,21 +100,16 @@ public class UserService implements UserDetailsManager {
     }
 
     @Transactional
-    @Override
-    public void updateUser(UserDetails userDetails) {
-        MyUser myUser = (MyUser) userDetails;
-        MyUser existingUser = entityManager.find(MyUser.class, myUser.getUserID());
+    public void myUpdateUser(int id, UpdateUserDTO userDTO) {
+        MyUser existingUser = entityManager.find(MyUser.class, id);
 
         if (existingUser != null) {
-            existingUser.setFirstname(myUser.getFirstname());
-            existingUser.setLastname(myUser.getLastname());
-            existingUser.setEmail(myUser.getEmail());
-            existingUser.setPassword(passwordEncoder.encode(myUser.getPassword()));
-            existingUser.setDaily(myUser.isDaily());
-            existingUser.setReminder(myUser.isReminder());
+            existingUser.setFirstname(userDTO.getFirstname());
+            existingUser.setLastname(userDTO.getLastname());
+            existingUser.setEmail(userDTO.getEmail());
             entityManager.merge(existingUser);
         } else {
-            throw new UserNotFoundException(myUser.getUserID());
+            throw new UserNotFoundException(id);
         }
     }
 
@@ -131,11 +127,6 @@ public class UserService implements UserDetailsManager {
         } else {
             throw new UserNotFoundException(email);
         }
-    }
-
-
-    @Override
-    public void changePassword(String oldPassword, String newPassword) {
     }
 
     @Transactional
@@ -163,6 +154,14 @@ public class UserService implements UserDetailsManager {
         settingsDTO.setReminder(user.isReminder());
 
         return settingsDTO;
+    }
+
+    @Override
+    public void changePassword(String oldPassword, String newPassword) {
+    }
+
+    @Override
+    public void updateUser(UserDetails userDetails) {
     }
 
 }

@@ -2,6 +2,7 @@ package com.example.balancebuddy.controllers;
 
 import com.example.balancebuddy.dtos.ChangePasswordDTO;
 import com.example.balancebuddy.dtos.NotificationSettingsDTO;
+import com.example.balancebuddy.dtos.UpdateUserDTO;
 import com.example.balancebuddy.dtos.UserDTO;
 import com.example.balancebuddy.entities.Goal;
 import com.example.balancebuddy.entities.MyUser;
@@ -23,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/user")
@@ -71,12 +73,13 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
-    // Endpoint to update a user
-    @PutMapping("/update")
-    public ResponseEntity<?> updateUser(@Valid @RequestBody MyUser user) {
-        userService.updateUser(user);
+    // Endpoint to update a user by ID
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable int id, @Valid @RequestBody UpdateUserDTO userDTO) {
+        userService.myUpdateUser(id, userDTO);
         return ResponseEntity.ok("User updated successfully!");
     }
+
 
     // Endpoint to delete a user
     @DeleteMapping("delete/{email}")
@@ -144,6 +147,17 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(goals, HttpStatus.OK);
+    }
+
+    @GetMapping("/details/{id}")
+    public ResponseEntity<MyUser> getUserDetailsById(@PathVariable int id) {
+        Optional<MyUser> userOptional = userService.findByID(id);
+
+        if (userOptional.isPresent()) {
+            return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 }

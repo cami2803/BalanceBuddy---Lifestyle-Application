@@ -12,6 +12,9 @@ import AddProgressPage from '../screens/AddProgressPage';
 import HabitsPage from '../screens/HabitsPage';
 import CreateHabitPage from '../screens/CreateHabitPage';
 import EditHabitsPage from '../screens/EditHabitsPage';
+import ReportPage from '../src/screens/ReportPage';
+import SettingsPage from '../src/screens/SettingsPage';
+import AccountPage from '../src/screens/AccountPage';
 
 const Stack = createStackNavigator();
 
@@ -30,6 +33,9 @@ const StackNavigator = () => {
             <Stack.Screen name="HabitsPage" component={HabitsPage} />
             <Stack.Screen name="CreateHabitPage" component={CreateHabitPage} />
             <Stack.Screen name="EditHabitsPage" component={EditHabitsPage} />
+            <Stack.Screen name="ReportPage" component={ReportPage} />
+            <Stack.Screen name="SettingsPage" component={SettingsPage} />
+            <Stack.Screen name="AccountPage" component={AccountPage} />
         </Stack.Navigator>
     );
 };

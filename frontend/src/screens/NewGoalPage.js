@@ -5,13 +5,14 @@ import { Picker } from '@react-native-picker/picker';
 import styles from '../styles/NewGoalStyle';
 import API_BASE_URL from '../utils/environment_variables';
 
-const NewGoalPage = () => {
+const NewGoalPage = ({ navigation }) => {
     const [habits, setHabits] = useState([]);
     const [selectedHabits, setSelectedHabits] = useState([]);
     const [target, setTarget] = useState('');
     const [periodicity, setPeriodicity] = useState('');
     const [isCreating, setIsCreating] = useState(false);
     const [selectedHabitID, setSelectedHabitID] = useState(null);
+    const [selectedUnit, setSelectedUnit] = useState('');
     const { fetchWithAuth } = useAuthFetch();
     const [userID, setUserID] = useState(null);
 
@@ -48,6 +49,7 @@ const NewGoalPage = () => {
                 setSelectedHabits(prevHabits => [...prevHabits, { ...habitToAdd, target }]);
                 setTarget('');
                 setSelectedHabitID(null);
+                setSelectedUnit('');
             }
         }
     };
@@ -91,6 +93,16 @@ const NewGoalPage = () => {
             });
     };
 
+    const handleHabitChange = (habitID) => {
+        setSelectedHabitID(habitID);
+        const habit = habits.find(h => h.habitID === habitID);
+        if (habit) {
+            setSelectedUnit(habit.unit);
+        } else {
+            setSelectedUnit('');
+        }
+    };
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Create New Goal</Text>
@@ -98,7 +110,7 @@ const NewGoalPage = () => {
                 <Picker
                     selectedValue={selectedHabitID}
                     style={styles.picker}
-                    onValueChange={(itemValue) => setSelectedHabitID(itemValue)}
+                    onValueChange={handleHabitChange}
                 >
                     <Picker.Item label="Select a Habit" value={null} />
                     {habits.map(habit => (
@@ -114,6 +126,7 @@ const NewGoalPage = () => {
                     onChangeText={setTarget}
                     keyboardType="numeric"
                 />
+                {selectedUnit && <Text style={styles.unitText}>{`(${selectedUnit})`}</Text>}
             </View>
             <TouchableOpacity style={styles.button} onPress={handleAddHabit}>
                 <Text style={styles.buttonText}>Add Habit to Goal</Text>
@@ -142,6 +155,12 @@ const NewGoalPage = () => {
                     </TouchableOpacity>
                 </View>
             )}
+            <TouchableOpacity
+                style={styles.button}
+                onPress={() => navigation.navigate('CreateHabitPage')}
+            >
+                <Text style={styles.buttonText}>Create a New Habit</Text>
+            </TouchableOpacity>
         </View>
     );
 };

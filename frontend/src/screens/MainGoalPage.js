@@ -9,7 +9,6 @@ const MainGoalPage = ({ navigation }) => {
     const [goal, setGoal] = useState(null);
     const { fetchWithAuth, loading } = useAuthFetch();
 
-
     const fetchCurrentUserAndGoal = async () => {
         try {
             const userResponse = await fetchWithAuth(`${API_BASE_URL}/user/me`);

@@ -35,12 +35,19 @@ const LoginPage = ({ navigation }) => {
             });
 
             const data = await response.json();
+            
             if (response.ok) {
                 await AsyncStorage.setItem('accessToken', data.accessToken);
                 Alert.alert('Success', 'Logged in successfully');
                 navigation.navigate('HomePage');
             } else {
-                setError(data.error || 'Incorrect credentials!');
+                if (data.error === 'Invalid password') {
+                    setError('Incorrect password, please try again.');
+                } else if (data.error === 'User not found') {
+                    setError('Email does not exist.');
+                } else {
+                    setError(data.error || 'Login failed, please try again.');
+                }
             }
         } catch (error) {
             setError('An error occurred while logging in');

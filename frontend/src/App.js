@@ -1,7 +1,8 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import LandingPage from './screens/LandingPage';
+
+import LandingPage from './src/screens/LandingPage';
 import LoginPage from './src/screens/LoginPage';
 import RegisterPage from './src/screens/RegisterPage';
 import HomePage from './src/screens/HomePage';
@@ -13,6 +14,9 @@ import AddProgressPage from './src/screens/AddProgressPage';
 import HabitsPage from './src/screens/HabitsPage';
 import CreateHabitPage from './src/screens/CreateHabitPage';
 import EditHabitsPage from './src/screens/EditHabitsPage';
+import ReportPage from './src/screens/ReportPage';
+import SettingsPage from './src/screens/SettingsPage';
+import AccountPage from './src/screens/AccountPage';
 
 const Stack = createStackNavigator();
 
@@ -20,7 +24,7 @@ const App = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName="LandingPage">
-                <Stack.Screen name="LandingPage" component={LandingPage} options={{ title: 'LandingPage' }} />
+                <Stack.Screen name="LandingPage" component={LandingPage} options={{ title: 'Welcome' }} />
                 <Stack.Screen name="LoginPage" component={LoginPage} options={{ title: 'Login' }} />
                 <Stack.Screen name="RegisterPage" component={RegisterPage} options={{ title: 'Register' }} />
                 <Stack.Screen name="HomePage" component={HomePage} options={{ title: 'Home Page' }} />
@@ -32,6 +36,9 @@ const App = () => {
                 <Stack.Screen name="HabitsPage" component={HabitsPage} options={{ title: 'Habits Page' }} />
                 <Stack.Screen name="CreateHabitPage" component={CreateHabitPage} options={{ title: 'Create Habit Page' }} />
                 <Stack.Screen name="EditHabitsPage" component={EditHabitsPage} options={{ title: 'Edit Habits Page' }} />
+                <Stack.Screen name="ReportPage" component={ReportPage} options={{ title: 'Report Page' }}/>
+                <Stack.Screen name="SettingsPage" component={SettingsPage} options={{ title: 'Settings Page' }}/>
+                <Stack.Screen name="AccountPage" component={AccountPage} options={{ title: 'Account Page' }}/>
             </Stack.Navigator>
         </NavigationContainer>
     );
