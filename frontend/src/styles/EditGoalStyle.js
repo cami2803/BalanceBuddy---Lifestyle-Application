@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-const EditGoalStyle = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#e0afa0',
@@ -96,4 +96,4 @@ const EditGoalStyle = StyleSheet.create({
     },
 });
 
-export default EditGoalStyle;
+export default styles;
