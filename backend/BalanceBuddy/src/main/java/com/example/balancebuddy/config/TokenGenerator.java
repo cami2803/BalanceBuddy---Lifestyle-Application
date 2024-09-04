@@ -26,7 +26,7 @@ public class TokenGenerator {
     @Qualifier("jwtRefreshTokenEncoder")
     private final JwtEncoder refreshTokenEncoder;
 
-    // Creates an access token with a 20 minute expiration time
+    // Creates an access token with a 120 minutes (2 hours) expiration time
     private String createAccessToken(Authentication authentication) {
         MyUser user = (MyUser) authentication.getPrincipal();
         Instant now = Instant.now();
@@ -34,7 +34,7 @@ public class TokenGenerator {
         JwtClaimsSet claimsSet = JwtClaimsSet.builder()
                 .issuer("myApp")
                 .issuedAt(now)
-                .expiresAt(now.plus(20, ChronoUnit.MINUTES))
+                .expiresAt(now.plus(120, ChronoUnit.MINUTES))
                 .subject(user.convertUserIDToString(user.getUserID()))
                 .build();
 

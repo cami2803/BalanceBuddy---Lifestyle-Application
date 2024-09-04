@@ -50,7 +50,7 @@ const HomePage = ({ navigation }) => {
                 <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('HistoryPage')}>
                     <Text style={styles.buttonText}>See History</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('LastReportPage')}>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ReportPage')}>
                     <Text style={styles.buttonText}>See Last Report</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SettingsPage')}>

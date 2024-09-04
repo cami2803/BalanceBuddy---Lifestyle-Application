@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-const NewGoalStyle = StyleSheet.create({
+const SettingsStyle = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
@@ -13,45 +13,28 @@ const NewGoalStyle = StyleSheet.create({
         marginBottom: 16,
         textAlign: 'center',
     },
-    section: {
+    settingContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         marginBottom: 16,
-        width: '100%',
+        paddingHorizontal: 10,
+        backgroundColor: '#f4f3ee', 
+        borderRadius: 5, 
+        paddingVertical: 10, 
     },
-    subtitle: {
+    settingText: {
         fontSize: 18,
         color: '#573d3c',
-        marginBottom: 8,
-    },
-    habitContainer: {
-        padding: 8,
-        backgroundColor: '#f4f3ee',
-        marginBottom: 4,
-        borderRadius: 5,
-    },
-    highlightedHabit: {
-        backgroundColor: '#d0f0c0',
-    },
-    habit: {
-        fontSize: 16,
-        color: '#406e8e', 
-    },
-    input: {
-        height: 40,
-        borderColor: '#406e8e',
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingHorizontal: 10,
-        backgroundColor: '#f4f3ee',
-        color: '#406e8e', 
     },
     button: {
         width: '80%',
-        backgroundColor: '#f4f3ee', 
+        backgroundColor: '#f4f3ee',
         padding: 15,
         alignItems: 'center',
         marginBottom: 20,
         marginTop: 30,
-        borderRadius: 10, 
+        borderRadius: 10,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -66,4 +49,4 @@ const NewGoalStyle = StyleSheet.create({
     },
 });
 
-export default NewGoalStyle;
+export default SettingsStyle;

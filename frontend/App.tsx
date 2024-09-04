@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+
 import LandingPage from './src/screens/LandingPage';
 import LoginPage from './src/screens/LoginPage';
 import RegisterPage from './src/screens/RegisterPage';
@@ -13,6 +14,9 @@ import AddProgressPage from './src/screens/AddProgressPage';
 import HabitsPage from './src/screens/HabitsPage';
 import CreateHabitPage from './src/screens/CreateHabitPage';
 import EditHabitsPage from './src/screens/EditHabitsPage';
+import ReportPage from './src/screens/ReportPage';
+import SettingsPage from './src/screens/SettingsPage';
+import AccountPage from './src/screens/AccountPage';
 
 type RootStackParamList = {
     LandingPage: undefined;
@@ -27,6 +31,9 @@ type RootStackParamList = {
     HabitsPage: undefined;
     CreateHabitPage: undefined;
     EditHabitsPage: undefined;
+    ReportPage: undefined;
+    SettingsPage: undefined;
+    AccountPage: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -47,6 +54,9 @@ const App = () => {
                 <Stack.Screen name="HabitsPage" component={HabitsPage} options={{ title: 'Habits Page' }} />
                 <Stack.Screen name="CreateHabitPage" component={CreateHabitPage} options={{ title: 'Create Habit Page' }} />
                 <Stack.Screen name="EditHabitsPage" component={EditHabitsPage} options={{ title: 'Edit Habits Page' }} />
+                <Stack.Screen name="ReportPage" component={ReportPage} options={{ title: 'Report Page' }}/>
+                <Stack.Screen name="SettingsPage" component={SettingsPage} options={{ title: 'Settings Page' }}/>
+                <Stack.Screen name="AccountPage" component={AccountPage} options={{ title: 'Account Page' }}/>
             </Stack.Navigator>
         </NavigationContainer>
     );
