@@ -93,14 +93,10 @@ public class ScheduledTasksService {
 
 
     private double calculateOverallProgress(ProgressData progressData) {
-        double totalTarget = 0;
-        double totalProgress = 0;
+        int totalTarget = progressData.getTarget().values().stream().mapToInt(Integer::intValue).sum();
+        int totalProgress = progressData.getProgress().values().stream().mapToInt(Integer::intValue).sum();
 
-        for (String habit : progressData.getProgress().keySet()) {
-            totalTarget += progressData.getTarget().get(habit);
-            totalProgress += progressData.getProgress().get(habit);
-        }
-
-        return totalTarget > 0 ? (totalProgress * 100) / totalTarget : 0;
+        return totalTarget > 0 ? (totalProgress * 100.0) / totalTarget : 0;
     }
+
 }
