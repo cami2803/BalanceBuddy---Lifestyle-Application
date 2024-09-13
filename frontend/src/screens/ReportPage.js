@@ -4,6 +4,7 @@ import styles from '../styles/ReportStyle';
 import CircularProgress from '../components/CircularProgress';
 import useAuthFetch from '../utils/useAuthFetch';
 import API_BASE_URL from '../utils/environment_variables';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ReportPage = ({ navigation }) => {
     const [habitDetails, setHabitDetails] = useState([]);
@@ -45,6 +46,12 @@ const ReportPage = ({ navigation }) => {
 
                     const percentCompleted = totalTarget > 0 ? (totalProgress / totalTarget) * 100 : 0;
                     setPercentCompleted(percentCompleted);
+
+                    await AsyncStorage.setItem('latestReport', JSON.stringify({
+                        habitDetails,
+                        percentCompleted,
+                        date: new Date().toISOString(),
+                    }));
                 } else {
                     console.log('No goals found for this user.');
                 }

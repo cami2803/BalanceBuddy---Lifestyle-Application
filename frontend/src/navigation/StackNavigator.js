@@ -15,6 +15,7 @@ import EditHabitsPage from '../screens/EditHabitsPage';
 import ReportPage from '../src/screens/ReportPage';
 import SettingsPage from '../src/screens/SettingsPage';
 import AccountPage from '../src/screens/AccountPage';
+import HistoryPage from '../screens/HistoryPage';
 
 const Stack = createStackNavigator();
 
@@ -36,6 +37,7 @@ const StackNavigator = () => {
             <Stack.Screen name="ReportPage" component={ReportPage} />
             <Stack.Screen name="SettingsPage" component={SettingsPage} />
             <Stack.Screen name="AccountPage" component={AccountPage} />
+            <Stack.Screen name="HistoryPage" component={HistoryPage} />
         </Stack.Navigator>
     );
 };

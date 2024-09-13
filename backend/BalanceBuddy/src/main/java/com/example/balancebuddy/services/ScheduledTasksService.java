@@ -7,6 +7,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +38,7 @@ public class ScheduledTasksService {
 
     // Send notifications hourly
     @Scheduled(cron = "0 0 * * * *")
+    @Async
     public void sendPeriodicNotifications() {
         List<MyUser> users = userService.getAllUsers();
         List<String> notifications = users.stream()
@@ -51,6 +53,7 @@ public class ScheduledTasksService {
 
     // Send report at 10PM everyday
     @Scheduled(cron = "0 0 22 * * ?")
+    @Async
     public void generateDailyReports() {
         List<MyUser> users = userService.getAllUsers();
         List<String> reports = users.stream()

@@ -5,7 +5,7 @@ import styles from '../styles/SettingsStyle';
 import API_BASE_URL from '../utils/environment_variables';
 
 const SettingsPage = ({ navigation }) => {
-    const [dailyReport, setDailyReport] = useState(false); 
+    const [dailyReport, setDailyReport] = useState(false);
     const [habitReminder, setHabitReminder] = useState(false);
     const [userId, setUserId] = useState(null);
 
@@ -13,9 +13,15 @@ const SettingsPage = ({ navigation }) => {
         const fetchSettings = async () => {
             try {
                 const accessToken = await AsyncStorage.getItem('accessToken');
-                const userResponse = await fetch(`${API_BASE_URL}/user/me`, {
-                    headers: { 'Authorization': `Bearer ${accessToken}` }
-                });
+
+                const [userResponse, settingsResponse] = await Promise.all([
+                    fetch(`${API_BASE_URL}/user/me`, {
+                        headers: { 'Authorization': `Bearer ${accessToken}` }
+                    }),
+                    fetch(`${API_BASE_URL}/user/notifications/${userId}`, {
+                        headers: { 'Authorization': `Bearer ${accessToken}` }
+                    })
+                ]);
 
                 if (userResponse.ok) {
                     const userData = await userResponse.json();
@@ -27,12 +33,13 @@ const SettingsPage = ({ navigation }) => {
 
                     if (settingsResponse.ok) {
                         const settings = await settingsResponse.json();
-
                         setDailyReport(settings.daily === true);
                         setHabitReminder(settings.reminder === true);
                     } else {
                         Alert.alert('Error', 'Failed to fetch settings.');
                     }
+                } else {
+                    Alert.alert('Error', 'Failed to fetch user information.');
                 }
             } catch (error) {
                 console.error('Error fetching settings:', error);
