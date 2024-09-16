@@ -25,7 +25,6 @@ const AccountPage = ({ navigation }) => {
     
                 if (response.ok) {
                     const user = await response.json();
-                    console.log('Fetched user:', user);
                     setId(user.id);
     
                     const userDetailsResponse = await fetch(`${API_BASE_URL}/user/details/${user.id}`, {
@@ -84,10 +83,6 @@ const AccountPage = ({ navigation }) => {
             } else {
                 responseData = await response.text();
             }
-    
-            console.log('Update Response:', responseData);
-            console.log('Update Status:', response.status);
-    
             if (response.ok) {
                 Alert.alert('Success', 'Account details updated successfully.');
             } else {
