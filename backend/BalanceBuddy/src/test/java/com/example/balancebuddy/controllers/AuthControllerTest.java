@@ -23,6 +23,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -67,9 +69,10 @@ class AuthControllerTest {
         Token mockToken = new Token();
         when(tokenGenerator.createToken(any(Authentication.class))).thenReturn(mockToken);
 
-        ResponseEntity<?> responseEntity = authController.register(signupDTO);
+        ResponseEntity<Token> responseEntity = authController.register(signupDTO);
 
         assertEquals(200, responseEntity.getStatusCodeValue());
+        assertNotNull(responseEntity.getBody());
     }
 
     @Test
@@ -77,7 +80,7 @@ class AuthControllerTest {
         SignUp signupDTO = new SignUp("test@example.com", "John", "Doe", "wrong");
 
 
-        ResponseEntity<?> responseEntity = authController.register(signupDTO);
+        ResponseEntity<List<String>> responseEntity = authController.register(signupDTO);
 
         assertEquals(400, responseEntity.getStatusCodeValue());
         assertEquals(Collections.singletonList("Password must be at least 8 characters long, contain an uppercase letter, a number, and a special character"), responseEntity.getBody());
@@ -100,8 +103,9 @@ class AuthControllerTest {
         Token mockToken = new Token();
         when(tokenGenerator.createToken(authentication)).thenReturn(mockToken);
 
-        ResponseEntity<?> responseEntity = authController.login(loginDTO);
+        ResponseEntity<Token> responseEntity = authController.login(loginDTO);
         assertEquals(200, responseEntity.getStatusCodeValue());
+        assertNotNull(responseEntity.getBody());
     }
 
     @Test
@@ -113,7 +117,7 @@ class AuthControllerTest {
         when(daoAuthenticationProvider.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new BadCredentialsException("Invalid credentials"));
 
-        ResponseEntity<?> responseEntity = authController.login(loginDTO);
+        ResponseEntity<Token> responseEntity = authController.login(loginDTO);
         assertEquals(400, responseEntity.getStatusCodeValue());
     }
 
@@ -128,8 +132,9 @@ class AuthControllerTest {
         when(refreshTokenAuthProvider.authenticate(any(BearerTokenAuthenticationToken.class))).thenReturn(authentication);
         when(tokenGenerator.createToken(authentication)).thenReturn(newToken);
 
-        ResponseEntity<?> responseEntity = authController.getNewAccessToken(tokenDTO);
+        ResponseEntity<Token> responseEntity = authController.getNewAccessToken(tokenDTO);
         assertEquals(200, responseEntity.getStatusCodeValue());
+        assertNotNull(responseEntity.getBody());
     }
 
     @Test
@@ -151,7 +156,7 @@ class AuthControllerTest {
 
     @Test
     void testLogout_Success() {
-        ResponseEntity<?> responseEntity = authController.logout(null, null);
+        ResponseEntity<Map<String, String>> responseEntity = authController.logout(null, null);
         assertEquals(200, responseEntity.getStatusCodeValue());
         assertEquals(Collections.singletonMap("message", "User logged out successfully."), responseEntity.getBody());
     }
@@ -173,7 +178,7 @@ class AuthControllerTest {
         Authentication authentication = mock(Authentication.class);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        ResponseEntity<?> responseEntity = authController.secureEndpoint(null);
+        ResponseEntity<String> responseEntity = (ResponseEntity<String>) authController.secureEndpoint(null);
         assertEquals(200, responseEntity.getStatusCodeValue());
         assertEquals("Secure data", responseEntity.getBody());
     }
