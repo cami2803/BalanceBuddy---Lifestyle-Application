@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -28,6 +29,8 @@ public class ScheduledTasksService {
     private final ReportGeneratorService reportGeneratorService;
 
     private final ProgressService progressService;
+
+    private final HistoryService historyService;
 
     @PostConstruct
     public void init() {
@@ -60,12 +63,18 @@ public class ScheduledTasksService {
                 .filter(MyUser::isDaily)
                 .map(user -> {
                     ProgressData progressData = progressService.getProgressForUser(user.getUserID());
+                    double overallProgress = calculateOverallProgress(progressData);
+
+                    double roundedProgress = Math.round(overallProgress * 100.0) / 100.0;
+                    historyService.saveProgressHistory(user.getUserID(), LocalDate.now(), roundedProgress);
+
                     String report = generateReportForUser(user, progressData);
                     return "Daily report for " + user.getUsername() + ":\n" + report;
                 }).toList();
 
         reports.forEach(System.out::println);
     }
+
 
     private String generateReportForUser(MyUser user, ProgressData progressData) {
         StringBuilder report = new StringBuilder("Your daily report:\n");

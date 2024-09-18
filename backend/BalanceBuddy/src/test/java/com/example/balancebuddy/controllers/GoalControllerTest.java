@@ -84,7 +84,7 @@ class GoalControllerTest {
         Goal goal = new Goal();
         when(goalService.updateGoal(eq(1), any(Goal.class))).thenReturn(goal);
 
-        ResponseEntity<?> response = goalController.updateGoal(1, goal);
+        ResponseEntity<Goal> response = (ResponseEntity<Goal>) goalController.updateGoal(1, goal);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(goal, response.getBody());
@@ -95,7 +95,7 @@ class GoalControllerTest {
         Goal goal = new Goal();
         when(goalService.updateGoal(eq(1), any(Goal.class))).thenThrow(new GoalNotFoundException(1));
 
-        ResponseEntity<?> response = goalController.updateGoal(1, goal);
+        ResponseEntity<String> response = (ResponseEntity<String>) goalController.updateGoal(1, goal);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("Goal not found: Goal not found with ID: 1", response.getBody());
     }
